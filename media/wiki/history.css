@@ -1,0 +1,10 @@
+body {
+    background-color: #666;
+}
+
+span.history_id {
+    font-size: 50%;
+    color: #999;
+    font-weight: normal;
+}
+

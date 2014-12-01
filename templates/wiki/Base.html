@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+{% block metatags %}<meta name="articleuri" content="{{ escaped_article_name }}" />{% endblock %}
+<title>{% block title %} Page title {% endblock %}</title>
+
+{% block css %}<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/read.css" media="screen" />{% endblock %}
+{% if css_additional %}
+<style type="text/css">
+{{ css_additional }}
+</style>
+{% endif %}
+
+<!-- Start iPhone -->
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+<link media="only screen and (max-device-width: 480px)" href="{{ MEDIA_URL }}wiki/iphone.css" type= "text/css" rel="stylesheet" />
+<!-- End iPhone -->
+<script type="text/javascript" src="{{MEDIA_URL}}wiki/jquery-1.3.2.min.js"></script>
+{% block script %}<script type="text/javascript" src="{{ MEDIA_URL }}wiki/edit.js"></script>{% endblock%}
+</head>
+<body>
+<div id="wrapper">
+{% include 'wiki/Nav.html' %}
+    <h1>{% block subTitle %}Sub title{% endblock %}</h1>
+    {% block content %}
+    {% endblock %}
+</div>
+
+<p id="validations">
+<a href="http://validator.w3.org/check/referer">XHTML validation</a>
+</p>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-15554540-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body> 
+</html>

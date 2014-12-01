@@ -1,0 +1,22 @@
+#nav {
+    display: none;
+}
+#controls {
+    display: none;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2em;
+    font-family: NanumGothic, '맑은 고딕', sans-serif;
+}
+
+h2 {
+    font-size: 150%;
+    line-height: 1em;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
