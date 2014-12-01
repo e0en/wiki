@@ -3,3 +3,5 @@ settings.py
 *.db
 *.json
 .DS_store
+log.txt
+
