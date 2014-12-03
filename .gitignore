@@ -1,5 +1,4 @@
 *.pyc
-settings.py
 *.db
 *.json
 .DS_store
