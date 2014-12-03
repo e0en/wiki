@@ -27,6 +27,7 @@
 {% endif %}
 
     <form action="../process_edit/{{ escaped_article_name }}" method="POST" id="edit">
+        {% csrf_token %}
         <div id="editor">
 	    <div id="insert_pad">
 		<ul id="tool_list">
