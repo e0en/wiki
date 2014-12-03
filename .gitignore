@@ -3,4 +3,4 @@
 *.json
 .DS_store
 log.txt
-
+secret.py

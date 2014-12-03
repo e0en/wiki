@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import secret
 
 
+SECRET_KEY = secret.SECRET_KEY
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 STATIC_DOC_ROOT = os.path.join(SITE_ROOT, 'media')
