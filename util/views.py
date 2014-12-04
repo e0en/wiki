@@ -17,8 +17,9 @@ import urllib
 import os
 from extnjoin import extSWFnJoinMP4
 
+
 def swf(request, addr):
-    extSWFnJoinMP4(addr, '/home/e0en/Codes/Personal/e0en/media/wiki/upload/tmp.mp4')
+    extSWFnJoinMP4(
+        addr, '/home/e0en/Codes/Personal/e0en/media/wiki/upload/tmp.mp4')
     url = 'http://480720.com/site_media/wiki/upload/tmp.mp4'
     return HttpResponse('<a href="%s">download here</a>' % url)
-

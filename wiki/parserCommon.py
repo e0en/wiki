@@ -2,6 +2,8 @@ import wikiPlugins
 plugins = wikiPlugins.load()
 
 # parse inline texts.
+
+
 def parse_inline(buff, acc):
     # load inline parsing plug-ins one by one.
     idx = 0
@@ -18,6 +20,7 @@ def parse_inline(buff, acc):
         idx += offset
 
     return result
+
 
 def objParseInline(buff, page):
     idx = 0

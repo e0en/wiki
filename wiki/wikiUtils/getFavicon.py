@@ -1,5 +1,6 @@
 import sgmllib
 
+
 def get_favicon_url(url):
     """
     Get the favicon used for site at url.
@@ -8,10 +9,11 @@ def get_favicon_url(url):
     - If neither found, return None
     """
     class FaviconFinder(sgmllib.SGMLParser):
+
         """
         A Parser class for finding the favicon used (if specified).
         """
-        
+
         def __init__(self, verbose=0):
             sgmllib.SGMLParser.__init__(self, verbose)
             self.favicon_url = None
@@ -31,7 +33,7 @@ def get_favicon_url(url):
     try:
         site = urllib.urlopen(url)
         contents = site.read()
-    
+
         favicon_parser = FaviconFinder()
         favicon_parser.feed(contents)
     except:
@@ -43,15 +45,15 @@ def get_favicon_url(url):
         if favicon_parser.favicon_url:
             return favicon_parser.favicon_url
         else:
-            url = '/'.join(url.split('/',3)[2:])
+            url = '/'.join(url.split('/', 3)[2:])
             root_directory = url.split('/')[0]
             favicon = httplib.HTTPConnection(root_directory)
-            favicon.request('GET','/favicon.ico')
+            favicon.request('GET', '/favicon.ico')
             response = favicon.getresponse()
             if response.status == 200:
                 return 'http://%s/favicon.ico' % root_directory
             favicon = httplib.HTTPConnection('www.' + root_directory)
-            favicon.request('GET','/favicon.ico')
+            favicon.request('GET', '/favicon.ico')
             response = favicon.getresponse()
             if response.status == 200:
                 return 'http://%s/favicon.ico' % ('www.' + root_directory)

@@ -1,5 +1,5 @@
 import interWiki
 
 mapping = {
-        'i': interWiki.parse,
-        }
+    'i': interWiki.parse,
+}

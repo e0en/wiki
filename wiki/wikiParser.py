@@ -5,8 +5,11 @@ import cgi
 import wikiSettings
 
 # Core functions of wikiwiki - list, header
+
+
 class Parser:
-    def __init__(self, settings = {}):
+
+    def __init__(self, settings={}):
         self.line_plugins = wikiLinePlugins.load()
         (self.pp_front, self.pp_end) = wikiPostProcessors.load()
         self.acc = settings
@@ -19,21 +22,22 @@ class Parser:
         raw_text = cgi.escape(raw_text)
 
         lines = raw_text.split('\n')
-       
+
         parsed = []
-        settings = {} 
+        settings = {}
         p_buffer = ''
 
         i = 0
-    
-        # process #1. create xhtmls from text 
+
+        # process #1. create xhtmls from text
         while 1:
             if i >= len(lines):
                 break
             if lines[i].strip() == '':
                 # make a paragraph
                 if p_buffer.strip() != '':
-                    parsed.append('<p>' + parse_inline(p_buffer.strip(), self.acc) + '</p>\n')
+                    parsed.append(
+                        '<p>' + parse_inline(p_buffer.strip(), self.acc) + '</p>\n')
                     p_buffer = ''
                 i += 1
             else:
@@ -42,7 +46,7 @@ class Parser:
                     if p.test(lines, i):
                         if p_buffer.strip() != '':
                             parsed.append('<p>' + parse_inline(p_buffer.strip(),
-                                self.acc) + '</p>\n')
+                                                               self.acc) + '</p>\n')
                             p_buffer = ''
                         text, offset = p.parse(lines, i, self.acc)
                         did_match = True
@@ -56,7 +60,8 @@ class Parser:
                     i += 1
         # flush p_buffer if its content exists
         if p_buffer.strip() != '':
-            parsed.append('<p>' + parse_inline(p_buffer.strip(), self.acc) + '</p>\n')
+            parsed.append(
+                '<p>' + parse_inline(p_buffer.strip(), self.acc) + '</p>\n')
 
         xhtml = ''
         for l in parsed:
