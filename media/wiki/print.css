@@ -1,14 +1,14 @@
-#nav {
+#nav, #search, #controls, #prev_next, #validations {
     display: none;
 }
-#controls {
-    display: none;
+
+body {
+    font-family: NanumMyeongjo, serif;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 2em;
-    font-family: NanumGothic, '맑은 고딕', sans-serif;
 }
 
 h2 {
@@ -17,6 +17,6 @@ h2 {
 }
 
 p {
-    margin: 0;
+    line-height: 1.5em;
     padding: 0;
 }
