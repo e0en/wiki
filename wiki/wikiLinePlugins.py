@@ -235,12 +235,12 @@ class HeaderParser(LinePlugin):
 class GeneralLinePlugin(LinePlugin):
 
     def test(self, lines, idx):
-        r1 = re.compile('^ *{{ *([^{}: ]+) *:* *([^}]+) *}} *$')
-        #r1 = re.compile('^ *{{ *([^{}: ]+) *}} *$')
+        r1 = re.compile('^ *{{ *([^{}: ]+) *:* *([^}]*) *}} *$')
+        # r1 = re.compile('^ *{{ *([^{}: ]+) *}} *$')
         r = re.compile('^ *{{ *([^}: ]+) *\|')
 
-        m1 = r1.match(lines[idx])
-        m = r.match(lines[idx])
+        m1 = r1.match(lines[idx].strip())
+        m = r.match(lines[idx].strip())
         if m1 != None:
             self.plugin = m1.group(1)
             self.param = m1.group(2)
