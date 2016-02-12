@@ -4,3 +4,4 @@
 .DS_store
 log.txt
 secret.py
+media/wiki/upload/*
