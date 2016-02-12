@@ -1,7 +1,7 @@
 import wikiSettings
 
 import wikiPlugins
-from parserCommon import parse_inline
+from parserCommon import parse_inline, parse_inline_markdown
 import wikiMisc
 from pygments import highlight
 import pygments.lexers
@@ -18,7 +18,7 @@ import cgi
 
 def load():
     plugins = [ListParser(), QuoteParser(), HeaderParser(), LaTeXParser(),
-               CodeParser(), FlashParser(), YoutubeParser()]
+               CodeParser(), FlashParser(), YoutubeParser(), TableOfContents()]
     plugins += [GeneralLinePlugin()]
     return plugins
 
@@ -32,6 +32,9 @@ class LinePlugin:
         text = ''
         offset = 1
         return text, offset
+
+    def parse_markdown(self, lines, idx, acc):
+        return self.parse(lines, idx, acc)
 
 # parse Quotation syntax.
 
@@ -62,6 +65,29 @@ class QuoteParser(LinePlugin):
 
                 return parsed, n_lines
         return buf, n_lines
+
+    def parse_markdown(self, lines, idx, acc):
+        n_lines = 0
+        buf = ''
+        src = ''
+        src_uri = ''
+
+        p = re.compile('"" +\(([^()]+)\) *$')
+        n_lines = 0
+        for l in lines[idx:]:
+            n_lines += 1
+            buf += l + '\n'
+            m = p.search(l)
+            if m:
+                src = m.group(1)
+                content = buf[2:-len(m.group(0))]
+                parsed = '> %s\n' % content
+                parsed += '> %s\n' % parse_inline_markdown(src, acc)
+
+                return parsed, n_lines
+        return buf, n_lines
+
+
 
 
 class ListParser(LinePlugin):
@@ -170,9 +196,36 @@ class ListParser(LinePlugin):
                         parse_inline(line['string'][depth + 1:], acc) + '\n'
             i = i + 1
 
+    def parseMlines_markdown(self, lines, acc):
+        i = 0
+        buff = ''
+        ol_indices = {}
+        for (i, line) in enumerate(lines):
+            mode = ''
+
+            depth = line['depth']
+            content = line['string']
+
+            bullet = content[depth]
+            if bullet == '#':
+                if depth not in ol_indices:
+                    ol_indices[depth] = 1
+                bullet = '%d. ' % ol_indices[depth]
+                ol_indices[depth] += 1
+
+            inline_parsed = parse_inline_markdown(content[depth + 1:], acc)
+            buff += ' ' * depth + bullet + ' ' + inline_parsed.strip() + '\n'
+
+        return buff + '\n' 
+
+
     def parse(self, lines, idx, acc):
         m_lines = self.labelDepths(lines[idx:])
         return self.parseMlines(m_lines, acc), len(m_lines)
+
+    def parse_markdown(self, lines, idx, acc):
+        m_lines = self.labelDepths(lines[idx:])
+        return self.parseMlines_markdown(m_lines, acc), len(m_lines)
 
 
 class HeaderParser(LinePlugin):
@@ -231,6 +284,48 @@ class HeaderParser(LinePlugin):
         offset = 1
         return text, offset
 
+    def parse_markdown(self, lines, idx, acc):
+        line = lines[idx].strip()
+        num = 0
+        for i in range(0, len(line)):
+            if line[i] != '=':
+                num = min(5, i)
+                break
+        num_eq = num
+        for i in range(0, num - 1):
+            if self.numbering[i] == 0:
+                num = i + 1
+                break
+
+        self.numbering[num - 1] += 1
+        for i in range(num, 5):
+            self.numbering[i] = 0
+
+        sec_num = self.numbering[:num]
+        sec_anchor = ''
+        for i in range(0, num):
+            sec_anchor += str(sec_num[i]) + '.'
+
+        title = line[num_eq:-num_eq]
+        for i in range(0, len(title)):
+            if title[0] == title[-1] == '=':
+                title = title[1:-1]
+            else:
+                break
+
+        inline = parse_inline_markdown(title, acc).strip()
+        text = "#" * (num + 1) + (" %s\n\n" % inline)
+
+        if 'chapters' not in acc:
+            acc['chapters'] = []
+
+        acc['chapters'].append(
+            {'section': sec_num, 'anchor_txt': sec_anchor, 'title': title})
+
+        offset = 1
+        return text, offset
+
+
 
 class GeneralLinePlugin(LinePlugin):
 
@@ -280,6 +375,34 @@ class GeneralLinePlugin(LinePlugin):
                         content += lines[i] + '\n'
             text = line.mapping[self.plugin](content, acc)
             return text, offset
+
+    def parse_markdown(self, lines, idx, acc):
+        if self.isOneLine:
+            # try:
+                # return 'plugin = "%s"' %self.plugin, 1
+            return line.mapping_markdown[self.plugin](self.param, acc), 1
+            # except:
+            #    return 'plugin "%s" not found' %self.plugin, 1
+        else:
+            rEnd = re.compile('(.*)}} *$')
+            content = ''
+            mEnd = rEnd.search(lines[idx])
+            offset = 1
+            if mEnd != None:
+                cEnd = len(mEnd.group(1))
+                content = lines[idx][self.cStart:cEnd]
+            else:
+                for i in range(idx + 1, len(lines)):
+                    offset += 1
+                    mEnd = rEnd.search(lines[i])
+                    if mEnd != None:
+                        cEnd = len(mEnd.group(1))
+                        content += lines[i][:cEnd] + '\n'
+                    else:
+                        content += lines[i] + '\n'
+            text = line.mapping[self.plugin](content, acc)
+            return text, offset
+
 
 
 class FlashParser(LinePlugin):
@@ -416,6 +539,27 @@ class CodeParser(LinePlugin):
 
         return result, offset
 
+    def parse_markdown(self, lines, idx, acc):
+        i = idx + 1
+        parsed = ''
+        lang = lines[idx][3:]
+        while 1:
+            if lines[i].strip()[-3:] == '}}}':
+                parsed += lines[i][:-3]
+                break
+            elif i == len(lines) - 1:
+                return lines[idx], 1
+            else:
+                parsed += lines[i] + '\n'
+            i += 1
+
+        code = wikiMisc.unescapeHTML(parsed).strip()
+        result = '```%s\n%s\n```\n\n' % (lang, code)
+        offset = i - idx + 1
+
+        return result, offset
+
+
 
 class LaTeXParser(LinePlugin):
 
@@ -467,11 +611,33 @@ class LaTeXParser(LinePlugin):
 
         return result, offset
 
+    def parse_markdown(self, lines, idx, acc):
+        i = idx + 1
+        parsed = ''
+        while 1:
+            if lines[i].strip()[-3:] == '}}}':
+                parsed += lines[i][:-3]
+                break
+            elif i == len(lines) - 1:
+                return lines[idx], 1
+            else:
+                parsed += lines[i] + '\n'
+            i += 1
+        parsed = latex.preprocess(parsed.strip())
+
+        result = '$$\n%s\n$$\n' % parsed
+
+        offset = i - idx + 1
+
+        return result, offset
+
+
+
 
 class TableOfContents(LinePlugin):
 
     def test(self, lines, idx):
         return lines[idx].replace(' ', '').lower() == '{{tableofcontents}}'
 
-    def parse(self, lines, idx, acc):
-        return str(acc['chapters']), 1
+    def parse_markdown(self, lines, idx, acc):
+        return '[TOC]\n', 1

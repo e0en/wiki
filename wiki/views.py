@@ -111,8 +111,60 @@ def read(request, args=''):
     return render_to_response('wiki/Read.html', context,
                               context_instance=RequestContext(request))
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Test Code
 
+def markdown(request, args=''):
+    t_start = time.time()
+    # in case of null article name, go to main page
+    if args.strip() == '':
+        return HttpResponseRedirect(wikiSettings.site_uri + 'markdown/' +
+                                    wikiSettings.main_page)
+    article_name = wikiMisc.unEscapeName(args)
+
+    # in case of nonexisting article, go to search page
+    try:
+        a = wikiModels.Article.objects.get(name=article_name)
+    except wikiModels.Article.DoesNotExist:
+        return HttpResponseRedirect(urllib.quote((wikiSettings.site_uri +
+                                                  'search?q=' + article_name).encode('utf8'), '?=/:'))
+
+    a_prev = wikiModels.Article.objects.filter(
+        name__lt=a.name).order_by('-name')
+    a_next = wikiModels.Article.objects.filter(
+        name__gt=a.name).order_by('name')
+    prev_page = None
+    next_page = None
+    if a_prev:
+        prev_page = a_prev[0]
+    if a_next:
+        next_page = a_next[0]
+
+    # parse the page
+    p = Parser({'article_name': article_name})
+    content = p.parse_markdown(a.content)
+
+    context = {'site_uri': wikiSettings.site_uri,
+               'escaped_article_name': wikiMisc.escapeName(a.name),
+               'article_name': a.name,
+               'parsed_article_content': mark_safe(content),
+               'generate_time': round(time.time() - t_start, 6),
+               'prev_page': prev_page,
+               'next_page': next_page,
+               }
+    if 'q' in request.GET:
+        context['search_query'] = request.GET['q']
+    if 'css' in p.acc:
+        context['css_additional'] = p.acc['css']
+    if 'redirect' in p.acc:
+        context['redirect'] = p.acc['redirect']
+
+    wikiMisc.addLog(wikiSettings.log_filename,
+                    request.META.get('REMOTE_ADDR'), 'Markdown', a.name)
+
+    return render_to_response('wiki/Read.html', context,
+                              context_instance=RequestContext(request))
+
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Test Code
 
 def editTest(request, args=''):
     if args.strip() == '':

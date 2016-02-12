@@ -1,6 +1,5 @@
 import wikiSettings
 import wikiMisc
-import urllib
 import re
 import models as wikiModels
 import inline
@@ -38,6 +37,9 @@ class Plugin:
     def parse(self, text, idx, acc):
         return text[idx], 1
 
+    def parse_markdown(self, text, idx, acc):
+        return self.parse(text, idx, acc)
+
 
 class CarrageReturn(Plugin):
 
@@ -46,6 +48,9 @@ class CarrageReturn(Plugin):
 
     def parse(self, text, idx, acc):
         return '<br />\n', 1
+
+    def parse_markdown(self, text, idx, acc):
+        return '\n', 1
 
 
 class SpecialChar(Plugin):
@@ -93,6 +98,10 @@ class InlineCode(Plugin):
     def parse(self, text, idx, acc):
         (content, shift) = extractContent(text, idx, '[[code:', ']]')
         return ('<code>' + content + '</code>', shift)
+    
+    def parse_markdown(self, text, idx, acc):
+        (content, shift) = extractContent(text, idx, '[[code:', ']]')
+        return ('`' + content + '`', shift)
 
 
 class Emphasize(Plugin):
@@ -143,6 +152,48 @@ class Emphasize(Plugin):
                 # print txt
                 return txt, idx_end - idx
 
+    def parse_markdown(self, text, idx, acc):
+        for i in range(idx, len(text)):
+            if text[i] != "'":
+                pos_no_mark = i
+                break
+            else:
+                pos_no_mark = len(text) - 1
+        pos_end_mark = text[pos_no_mark:].find("''")
+
+        if pos_end_mark == -1:
+            return ("''", 2)
+        else:
+            pos_end_mark += pos_no_mark
+            for i in range(pos_end_mark, len(text)):
+                if text[i] != "'":
+                    idx_end = i
+                    break
+                elif i == len(text) - 1:
+                    idx_end = i + 1
+                    break
+
+            txt = text[idx:idx_end]
+            n_mark = 0
+            for i in range(0, len(txt)):
+                if txt[0] == txt[-1] == "'":
+                    txt = txt[1:-1]
+                    n_mark += 1
+                    if n_mark >= 3:
+                        break
+                else:
+                    break
+
+            if n_mark == 2:
+                return '*' + txt + '*', idx_end - idx
+            elif n_mark == 3:
+                return '**' + txt + '**', idx_end - idx
+            else:
+                # print txt
+                return txt, idx_end - idx
+
+
+
 
 class Strike(Plugin):
 
@@ -170,6 +221,15 @@ class UrlLinker(Plugin):
         else:
             i = len(text)
         return '<a href="%s" class="link_external">%s</a>' % (text[idx:i].strip(), text[idx:i]), i - idx
+
+    def parse_markdown(self, text, idx, acc):
+        m = re.search(r'[ \n\r]', text[idx:])
+
+        if m != None:
+            i = m.start() + idx + 1
+        else:
+            i = len(text)
+        return text[idx:i].strip() + ' ', i - idx
 
 
 class FootNote(Plugin):
@@ -270,6 +330,66 @@ class LinkMaker(Plugin):
             link_target.strip(), link_class, link_name.strip())
         return result, pos_end + 1
 
+    def parse_markdown(self, text, idx, acc):
+        # find closing tag
+        pos_end = text[idx:].find(']')
+        if pos_end == -1:
+            return '[', 1
+
+        link_content = text[idx + 1:pos_end + idx].strip()
+
+        link_class = ''
+        pagename = ''
+
+        # when we have [displayed_name | addr] pattern
+        if link_content.find('|') > 0:
+            tmp = link_content.split('|', 1)
+            link_name = tmp[0].strip()
+            link_target = tmp[1].strip()
+
+            # we only check if the addr is URI or not.
+            if wikiMisc.isURI(link_target.strip()):
+                result = '[%s](%s)' % (link_name, link_target)
+                return result, pos_end + 1
+
+            else:
+                page_name = link_target
+                link_class = 'link_inside'
+                try:
+                    a = wikiModels.Article.objects.get(name=page_name)
+                except wikiModels.Article.DoesNotExist:
+                    link_class = 'link_inside_nonexist'
+
+
+        # otherwise, we make a link to a wiki page
+        else:
+            if ':' in link_content:
+                tmp = link_content.split(':', 1)
+                if tmp[0] in inline.mapping:
+                    return inline.mapping[tmp[0]](tmp[1], acc), pos_end + 1
+                else:
+                    return '[%s:%s]' % (tmp[0], tmp[1]), pos_end + 1
+            else:
+                page_name = link_content
+                link_name = link_content.strip()
+                link_target = link_content.strip()
+
+                try:
+                    a = wikiModels.Article.objects.get(name=page_name)
+                except wikiModels.Article.DoesNotExist:
+                    link_class = 'link_inside_nonexist'
+
+        if link_class == 'link_inside' or link_class == 'link_inside_nonexist':
+            if 'links' not in acc:
+                acc['links'] = []
+            acc['links'].append(page_name)
+
+        if link_name == link_target:
+            result = '[[%s]]' % link_name
+        else:
+            result = '[[%s|%s]]' % (link_name, link_target)
+        return result, pos_end + 1
+
 
 class InlineLaTeX(Plugin):
 
@@ -293,3 +413,20 @@ class InlineLaTeX(Plugin):
 
         result = '\\(%s\\)' % latex.preprocess(parsed)
         return result, pos_end + 2
+
+    def parse_markdown(self, text, idx, acc):
+        if idx != 0 and text[idx - 1] == '\\':
+            return '$', idx + 2
+
+        pos_end = text[idx + 1:].find('$')
+        while text[idx + 1 + pos_end - 1] == '\\':
+            pos_end = text[idx + 1 + pos_end:].find('$')
+        # for incomplete syntax
+        if pos_end == -1:
+            return '', idx + 1
+        parsed = text[idx + 1:pos_end + idx + 1].strip()
+
+        result = '$%s$' % latex.preprocess(parsed)
+        return result, pos_end + 2
+
+
