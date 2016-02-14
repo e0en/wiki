@@ -50,6 +50,7 @@ class Parser:
     def __init__(self, settings={}):
         self.line_plugins = wikiLinePlugins.load()
         (self.pp_front, self.pp_end) = wikiPostProcessors.load()
+        (self.pp_front_md, self.pp_end_md) = wikiPostProcessors.load_markdown()
         self.acc = settings
         title = self.acc['article_name']
         self.acc['site_uri'] = wikiSettings.site_uri
@@ -168,9 +169,9 @@ class Parser:
         # post_processing step. it makes a list of backlink and stuffs.
         str_front = ''
         str_end = ''
-        for f in self.pp_front:
+        for f in self.pp_front_md:
             str_front += f(self.acc)
-        for f in self.pp_end:
+        for f in self.pp_end_md:
             str_end += f(self.acc)
         xhtml = str_front + xhtml + str_end
 
