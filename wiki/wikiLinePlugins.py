@@ -81,13 +81,11 @@ class QuoteParser(LinePlugin):
             if m:
                 src = m.group(1)
                 content = buf[2:-len(m.group(0))]
-                parsed = '> %s\n' % content
+                parsed = '> %s\n' % content[:-1]
                 parsed += '> %s\n' % parse_inline_markdown(src, acc)
 
-                return parsed, n_lines
+                return parsed + '\n', n_lines
         return buf, n_lines
-
-
 
 
 class ListParser(LinePlugin):
