@@ -29,6 +29,18 @@ def robot(request):
     return HttpResponse(robot_txt)
 
 
+def batch_markdown(request):
+    articles = wikiModels.Article.objects.all()
+
+    for a in articles:
+        p = Parser({'article_name': a.name})
+        a.markdown = p.to_markdown(a.content)
+        a.save()
+
+
+    return HttpResponse('Conversion to Markdown is complete')
+
+
 def bkup(request):
     model_names = ['Author', 'Article', 'Media', 'History', 'Settings']
     for model_name in model_names:

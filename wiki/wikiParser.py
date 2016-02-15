@@ -116,7 +116,7 @@ class Parser:
 
         return xhtml
 
-    def parse_markdown(self, raw_text):
+    def to_markdown(self, raw_text):
         raw_text = raw_text.replace('\r', '')
         raw_text = cgi.escape(raw_text)
 
@@ -175,9 +175,13 @@ class Parser:
             str_end += f(self.acc)
         xhtml = str_front + xhtml + str_end
 
+        return xhtml
+
+    def parse_markdown(self, raw_text):
+        md_text = self.to_markdown(raw_text)
+
         renderer = MyRenderer()
         inline = MyLexer(renderer)
-
         markdown = mistune.Markdown(renderer=renderer, inline=inline)
 
-        return markdown(xhtml)
+        return markdown(md_text)
