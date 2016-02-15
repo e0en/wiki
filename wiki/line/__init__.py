@@ -1,5 +1,7 @@
 import image
 import misc
+import misc_markdown
+
 
 mapping = {
     'img': image.parse,
@@ -9,6 +11,6 @@ mapping = {
 
 mapping_markdown = {
     'img': image.parse_markdown,
-    'backlinks': misc.backLinks,
-    'redirect': misc.redirectTo,
+    'backlinks': misc_markdown.backLinks,
+    'redirect': misc_markdown.redirectTo,
 }
