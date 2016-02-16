@@ -68,7 +68,7 @@ def parse_markdown(s, acc):
         {'section': section, 'num': fig_num, 'content': s, 'anchor_txt': fig_anchor})
 
     title = d.get("alt", "")
-    result = '![%s](%s)' % (uri, title)
+    result = '![%s](%s)' % (title, uri)
 
     if 'dim' in d:
         dim = d['dim'].split('x')

@@ -14,6 +14,7 @@ class Article(models.Model):
     name = models.CharField(max_length=100)
     ip_address = models.CharField(max_length=32)
     content = models.TextField()
+    markdown = models.TextField()
     content_html = models.TextField()
     time_create = models.DateTimeField(default=datetime.now, auto_now_add=True)
     time_edit = models.DateTimeField(default=datetime.now, auto_now_add=True)

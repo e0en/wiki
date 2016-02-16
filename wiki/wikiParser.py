@@ -3,8 +3,46 @@ import wikiLinePlugins
 import wikiPostProcessors
 import cgi
 import wikiSettings
+import mistune
+import re
+from mistune_contrib import highlight, math
 
 # Core functions of wikiwiki - list, header
+
+
+
+class MyRenderer(mistune.Renderer, math.MathRendererMixin):
+    def block_code(self, code, lang):
+        return highlight.block_code(code, lang, True)
+
+    def wiki_link(self, alt, link):
+        return '<a href="%s">%s</a>' % (link, alt)
+
+
+class MyLexer(mistune.InlineLexer, math.MathInlineMixin):
+    def enable_wiki_link(self):
+        self.rules.wiki_link = re.compile(
+            r'\[\['
+            r'([^\[^\]]+)'
+            r'\]\]')
+        self.default_rules.insert(0, 'wiki_link')
+
+    def output_wiki_link(self, m):
+        text = m.group(1)
+
+        if '|' in text:
+            alt, link = text.split('|')
+        else:
+            alt = text
+            link = text
+
+        return self.renderer.wiki_link(alt, link)
+
+
+    def __init__(self, *args, **kwargs):
+        super(MyLexer, self).__init__(*args, **kwargs)
+        self.enable_math()
+        self.enable_wiki_link()
 
 
 class Parser:
@@ -12,6 +50,7 @@ class Parser:
     def __init__(self, settings={}):
         self.line_plugins = wikiLinePlugins.load()
         (self.pp_front, self.pp_end) = wikiPostProcessors.load()
+        (self.pp_front_md, self.pp_end_md) = wikiPostProcessors.load_markdown()
         self.acc = settings
         title = self.acc['article_name']
         self.acc['site_uri'] = wikiSettings.site_uri
@@ -77,7 +116,7 @@ class Parser:
 
         return xhtml
 
-    def parse_markdown(self, raw_text):
+    def to_markdown(self, raw_text):
         raw_text = raw_text.replace('\r', '')
         raw_text = cgi.escape(raw_text)
 
@@ -130,10 +169,19 @@ class Parser:
         # post_processing step. it makes a list of backlink and stuffs.
         str_front = ''
         str_end = ''
-        for f in self.pp_front:
+        for f in self.pp_front_md:
             str_front += f(self.acc)
-        for f in self.pp_end:
+        for f in self.pp_end_md:
             str_end += f(self.acc)
         xhtml = str_front + xhtml + str_end
 
-        return "<pre>%s</pre>" % xhtml.strip()
+        return xhtml
+
+    def parse_markdown(self, raw_text):
+        md_text = self.to_markdown(raw_text)
+
+        renderer = MyRenderer()
+        inline = MyLexer(renderer)
+        markdown = mistune.Markdown(renderer=renderer, inline=inline)
+
+        return markdown(md_text)

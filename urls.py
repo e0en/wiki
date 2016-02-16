@@ -46,6 +46,7 @@ urlpatterns = patterns('',
                        (r'^bkup/', wikiviews.bkup),
                        (r'^recover/', wikiviews.recover),
                        (r'^random/', wikiviews.random),
+                       (r'^batch_markdown/', wikiviews.batch_markdown),
                        (r'^robots.txt', wikiviews.robot),
                        (r'^u/swf/(.*)', utilviews.swf),
                        )

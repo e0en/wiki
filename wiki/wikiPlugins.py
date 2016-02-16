@@ -258,6 +258,22 @@ class FootNote(Plugin):
             n, link_addr, content, n)
         return parsed, pos_end + 1
 
+    def parse_markdown(self, text, idx, acc):
+        pos_end = text[idx:].find(']')
+        if pos_end == -1:
+            return '[*', 2
+
+        content = text[idx + 2:pos_end + idx].strip()
+        if 'footnote' not in acc:
+            acc['footnote'] = [content]
+        else:
+            acc['footnote'].append(content)
+        n = len(acc['footnote'])
+        link_addr = '#footnote_%d' % n
+
+        parsed = '[^%d]' % n
+        return parsed, pos_end + 1
+
 
 class LinkMaker(Plugin):
 
