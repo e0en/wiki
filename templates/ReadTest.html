@@ -1,0 +1,43 @@
+{% extends 'wiki/Base.html' %}
+
+{% block metatags %}
+<meta name="articleuri" content="{{ escaped_article_name }}" />
+{% if redirect %}
+<meta http-equiv="Refresh" content="1; url=/wiki/read/{{ redirect }}" />
+{% endif %}
+{% endblock %}
+
+{% block title %}{{ article_name }}{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/read.css" media="screen" />
+<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/print.css" media="print" />
+{% endblock %}
+
+{% block script %}<script type="text/javascript" src="{{ MEDIA_URL }}wiki/view.js"></script>{% endblock%}
+
+
+{% block subTitle %}{{ article_name }}{% endblock %}
+{% block content %}
+<div id="content" class="content_read">
+{{ parsed_article_content }}
+
+<p id="controls">
+<a href="../edit/{{ escaped_article_name }}">Edit this page</a>
+<a href="../history_list/{{ escaped_article_name }}">Other Versions</a>
+<a href="../delete/{{ escaped_article_name }}">Delete this page</a>
+</p>
+</div>
+
+<div id="test">
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+var yahooAppId = "t2WwJc_V34Erfd0oEJ5YNUJ0CUfkZo..Lhn3xEWBrITAKSdA.191_6JNCIKhQA--";
+
+$.getJSON('http://search.yahooapis.com/WebSearchService/V1/spellingSuggestion?appid='+yahooAppId+'&query='+'{{ article_name }}'+'&output=json&callback=?', function(json) {
+	$('#test').text('Result: ').append(json.ResultSet.Result);
+});
+
+});
+</script>
+{% endblock %}

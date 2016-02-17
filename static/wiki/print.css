@@ -1,0 +1,22 @@
+#nav, #search, #controls, #prev_next, #validations {
+    display: none;
+}
+
+body {
+    font-family: NanumMyeongjo, serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+h2 {
+    font-size: 150%;
+    line-height: 1em;
+}
+
+p {
+    line-height: 1.5em;
+    padding: 0;
+}

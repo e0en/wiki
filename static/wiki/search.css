@@ -1,0 +1,36 @@
+body {
+    background-color: #96c;
+}
+h1 {
+    margin: 0 0 0.4em 0;
+    padding: 0 0 0.2em 0;
+    font-size: 150%;
+    clear: both;
+    color: #999;
+}
+h1 #keyword {
+    font-size: 200%;
+    color: black;
+}
+#search_suggestion {
+    background: #eee;
+    padding: 1em;
+    font-size: 85%;
+}
+
+#search_suggestion a {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+#exact_match {
+    margin: 1em 0;
+    padding: 2em;
+    border: 1px solid #eee;
+    background: #eee;
+    /*border-radius: 10px;*/
+}
+#exact_match a {
+    font-size: 150%;
+    font-weight: bold;
+}

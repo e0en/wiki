@@ -1,0 +1,32 @@
+{% extends 'wiki/Base.html' %}
+
+{% block metatags %}
+<meta name="articleuri" content="{{ escaped_article_name }}" />
+{% endblock %}
+
+{% block title %}Recent Changes{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/read.css" media="screen" />
+<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/recentChanges.css" media="screen" />
+{% endblock %}
+
+
+{% block script %}{% endblock%}
+
+{% block subTitle %}RecentChanges{% endblock %}
+{% block content %}
+{% for h in history_list %}
+<h2>{{ h.date }}</h2>
+<ul class="page_list">
+{% for d in h.changes %}
+        <li>
+        <span class="time">{{ d.time_edit }}</span> 
+		<span class="ip_address">{{ d.ip_address }}</span>
+		<span class="type">{{ d.type }}</span>
+		<span class="name"><a href="../read/{{ d.name_esc }}">{{ d.name }}</a></span>
+        <!-- <span class="author">{{ h.author }}</span> -->
+        </li>
+{% endfor %}
+</ul>
+{% endfor %}
+{% endblock %}

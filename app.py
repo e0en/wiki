@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sqlite3
-from flask import Flask, redirect, url_for, g
+from flask import Flask, redirect, url_for, g, render_template
 
 
 app = Flask(__name__)
@@ -38,6 +38,7 @@ def read(pagename):
     res = query_db(query_str, one=True)
 
     if res is not None:
+        return render_template("Read.html")
         return "<pre>%s</pre>" % res["markdown"]
     else:
         return redirect(url_for('search', q=pagename))
