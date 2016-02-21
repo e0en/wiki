@@ -1,13 +1,13 @@
 {% extends 'Base.html' %}
 
 {% block metatags %}
-<meta name="articleuri" content="{{ escaped_article_name }}" />
+<meta name="articleuri" content="{{ article.name }}" />
 {% if redirect %}
-<meta http-equiv="Refresh" content="1; url={{site_uri}}read/{{ redirect }}" />
+<meta http-equiv="Refresh" content="1; url={{ url_for("read", pagename="%s" % redirect) }}" />
 {% endif %}
 {% endblock %}
 
-{% block title %}{{ article_name }}{% endblock %}
+{% block title %}{{ article.name }}{% endblock %}
 
 {% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="wiki/read.css") }}" media="screen" />
 <link rel="stylesheet" href="{{ url_for("static", filename="wiki/print.css") }}" media="print" />
@@ -26,7 +26,7 @@ MathJax.Hub.Config({
 {% endblock%}
 
 
-{% block subTitle %}{{ article_name }}{% endblock %}
+{% block subTitle %}{{ article.name }}{% endblock %}
 {% block content %}
 
 {% if search_query %}
@@ -37,22 +37,22 @@ MathJax.Hub.Config({
 </div>
 {% endif %}
 <div id="content" class="content_read">
-{{ parsed_article_content }}
+{{ article.content_html|safe }}
 
 <p id="controls">
-<a id="control_edit" href="../edit/{{ escaped_article_name }}">Edit this page</a>
-<a href="../history_list/{{ escaped_article_name }}">Other Versions</a>
-<a href="../delete/{{ escaped_article_name }}">Delete this page</a>
-<a href="{{site_uri}}markdown/{{ escaped_article_name }}">Markdown</a>
-<a href="{{site_uri}}read/{{ escaped_article_name }}">Read</a>
+<a id="control_edit" href="{{ url_for("edit", pagename=article.name) }}">Edit</a>
+<a href="{{ url_for("history_list", pagename=article.name) }}">History</a>
+<a href="{{ url_for("delete", pagename=article.name) }}">Delete</a>
+<a href="{{ url_for("raw", pagename=article.name) }}">Raw</a>
+<a href="{{ url_for("read", pagename=article.name) }}">Read</a>
 </p>
 
 <nav id="prev_next">
 {% if prev_page %}
-<a id="nav_prev_page" href="{{site_uri}}read/{{prev_page.name}}">{{prev_page.name}}</a>
+<a id="nav_prev_page" href="{{ url_for("read", pagename=prev_page.name) }}">{{prev_page.name}}</a>
 {% endif %}
 {% if next_page %}
-<a id="nav_next_page" href="{{site_uri}}read/{{next_page.name}}">{{next_page.name}}</a>
+<a id="nav_next_page" href="{{ url_for("read", pagename=next_page.name) }}">{{next_page.name}}</a>
 {% endif %}
 </nav>
 </div>
