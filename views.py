@@ -422,17 +422,6 @@ def search(request):
             else:
                 match_list.append(a.name)
 
-    #suggestion = wikiMisc.spellCorrection(q)
-    suggestion = None
-
-    '''
-    if exact_match != None:
-        uri = urllib.quote(wikiSettings.site_uri +
-            'read/' + wikiMisc.escapeName(exact_match).encode('utf8'), ':/')
-        if m != q:
-            uri += '?q=' + wikiMisc.escapeName(q).encode('utf8')
-        return HttpResponseRedirect(uri)
-    '''
 
     alist_fulltext = wikiModels.Article.objects.filter(content__icontains=q)
     fullmatch_list = []
@@ -470,19 +459,3 @@ def rss(request):
     context = {'article_list': article_list, 'site_uri': wikiSettings.site_uri}
     return render_to_response('wiki/PageList.html', context,
                               context_instance=RequestContext(request))
-
-
-def googleXml(request, args):
-    return HttpResponse("NotImplemented")
-
-
-def rename(request, args):
-    pass
-    # rename current page
-    # find all links pointing to current page, and rename them
-
-# this will be modified on my instant needs
-
-
-def batch(request):
-    pass

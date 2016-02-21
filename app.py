@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import os
+import time
 from datetime import datetime, date
 
 from flask import Flask, redirect, url_for, g, render_template, Response,\
     request
 
-from wiki.wikiParser import Parser
+from parser import Parser
 
 
 app = Flask(__name__)
@@ -46,7 +47,6 @@ def read(pagename):
 
     if res is not None:
         res = dict(res)
-        print(dir(res))
         res['content_html'] = parser.parse_markdown(res['markdown'])
         prev_query = "SELECT name FROM wiki_article WHERE name<'%s' ORDER BY name desc LIMIT 1" % pagename
         next_query = "SELECT name FROM wiki_article WHERE name>'%s' ORDER BY name LIMIT 1" % pagename
@@ -77,7 +77,38 @@ def process_edit(article):
 
 @app.route("/recentchanges")
 def recentchanges():
-    return render_template("RecentChanges.html")
+    query = "SELECT * FROM wiki_history ORDER BY time desc"
+    histlist = query_db(query)
+    hlist = []
+    d_current = ''
+    names_in_day = []
+    titlelist = []
+    for item in histlist:
+        h = {}
+        day = item["time"].split(" ")[0]
+        h['name'] = item["name"]
+        h['name_esc'] = item["name"]
+        h['time_edit'] = item["time"].split(" ")[1].split(".")[0]
+        h['ip_address'] = item["ip_address"]
+        h['type'] = item["type"]
+        if item["name"] in titlelist:
+            continue
+        else:
+            titlelist.append(item["name"])
+        if d_current == '':
+            d_current = item["time"].split(" ")[0]
+            tmp = {'date': d_current, 'changes': [h]}
+            names_in_day.append(item["name"] + ',' + item["type"])
+        elif d_current != day:
+            hlist.append(tmp)
+            tmp = {'date': day, 'changes': [h]}
+            names_in_day.append(item["name"] + ',' + item["type"])
+            d_current = day
+        elif item["name"] + ',' + item["type"] not in names_in_day:
+            tmp['changes'].append(h)
+            names_in_day.append(item["name"] + ',' + item["type"])
+    hlist.append(tmp)
+    return render_template("RecentChanges.html", history_list=hlist)
 
 
 @app.route("/pagelist")
