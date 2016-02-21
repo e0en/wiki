@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 from datetime import datetime, date
-from flask import Flask, redirect, url_for, g, render_template
+from flask import Flask, redirect, url_for, g, render_template, Response
 
 
 app = Flask(__name__)
@@ -93,8 +93,7 @@ def raw(pagename):
     res = query_db(query_str, one=True)
 
     if res is not None:
-        return render_template("Read.html")
-        return res["markdown"]
+        return Response(res["markdown"], mimetype="text/plain")
     else:
         return redirect(url_for('search', q=pagename))
 
