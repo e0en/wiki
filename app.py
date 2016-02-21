@@ -7,6 +7,8 @@ from datetime import datetime, date
 from flask import Flask, redirect, url_for, g, render_template, Response,\
     request
 
+from wiki.wikiParser import Parser
+
 
 app = Flask(__name__)
 
@@ -40,8 +42,12 @@ def close_connection(exception):
 def read(pagename):
     query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
     res = query_db(query_str, one=True)
+    parser = Parser()
 
     if res is not None:
+        res = dict(res)
+        print(dir(res))
+        res['content_html'] = parser.parse_markdown(res['markdown'])
         prev_query = "SELECT name FROM wiki_article WHERE name<'%s' ORDER BY name desc LIMIT 1" % pagename
         next_query = "SELECT name FROM wiki_article WHERE name>'%s' ORDER BY name LIMIT 1" % pagename
         prev_page = query_db(prev_query, one=True)
