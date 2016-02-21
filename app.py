@@ -141,7 +141,34 @@ def search():
 
 @app.route("/history_list/<pagename>")
 def history_list(pagename):
-    return "history_list"
+    # fetch history of the page of the given name
+    try:
+        query = "SELECT * FROM wiki_history WHERE name='%s' AND type<>'new' ORDER BY id DESC" % pagename
+        hlist = query_db(query)
+    except:
+        hlist = []
+
+    if len(hlist) == 0:
+        return redirect(url_for("read", pagename=pagename))
+    else:
+        return render_template("HistoryList.html", 
+                history_list=hlist,
+                article_name=pagename)
+
+
+@app.route("/history/<history_id>")
+def history(history_id):
+    query = "SELECT * FROM wiki_history WHERE id=%s" % history_id
+    article = query_db(query, one=True)
+
+    if article is not None:
+        parser = Parser()
+        history = dict(article)
+        history["content_html"] = parser.parse_markdown(article["content"])
+        print(history)
+        return render_template("History.html", article=history)
+    else:
+        return redirect(url_for("read", pagename=article["name"]))
 
 
 @app.route("/delete/<pagename>")
