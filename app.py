@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 from datetime import datetime, date
-from flask import Flask, redirect, url_for, g, render_template, Response
+from flask import Flask, redirect, url_for, g, render_template, Response,\
+    request
 
 
 app = Flask(__name__)
@@ -39,20 +40,31 @@ def read(pagename):
     res = query_db(query_str, one=True)
 
     if res is not None:
-        print res.keys()
-        return render_template("Read.html", article=res)
+        prev_query = "SELECT name FROM wiki_article WHERE name<'%s' ORDER BY name desc LIMIT 1" % pagename
+        next_query = "SELECT name FROM wiki_article WHERE name>'%s' ORDER BY name LIMIT 1" % pagename
+        prev_page = query_db(prev_query, one=True)
+        next_page = query_db(next_query, one=True)
+        return render_template("Read.html", article=res, prev_page=prev_page,
+                next_page=next_page)
     else:
         return redirect(url_for('search', q=pagename))
 
 
-@app.route("/edit/<pagename>")
+@app.route("/edit/<pagename>", methods=["POST", "GET"])
 def edit(pagename):
     query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
     article = query_db(query_str, one=True)
-
     if article is None:
         article = { "name": pagename }
-    return render_template("Edit.html", article=article)
+
+    if request.method == "POST":
+        return process_edit(article)
+    else:
+        return render_template("Edit.html", article=article)
+
+
+def process_edit(article):
+    return redirect(url_for("read", pagename=article["name"]))
 
 
 @app.route("/recentchanges")
@@ -72,9 +84,17 @@ def upload():
     return render_template("Upload.html")
 
 
-@app.route("/search")
+@app.route("/search", methods=['GET'])
 def search():
-    return render_template("Search.html")
+    query = request.args.get('q', '')
+    query_str = "SELECT name FROM wiki_article WHERE name='%s'" % query
+    res = query_db(query_str, one=True)
+    if res:
+        exact_match = res["name"]
+    else:
+        exact_match = None
+
+    return render_template("Search.html", query=query, exact_match=exact_match)
 
 
 @app.route("/history_list/<pagename>")
