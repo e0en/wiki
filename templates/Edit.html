@@ -6,16 +6,16 @@
 
 {% block title %}{{ article.name }} - edit{% endblock %}
 
-{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="wiki/read.css") }}" media="screen" />
-<link rel="stylesheet" href="{{ url_for("static", filename="wiki/edit.css") }}" media="screen" />
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="edit.css") }}" media="screen" />
 <!-- Start iPhone -->
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-<link media="only screen and (max-device-width: 480px)" href="{{ url_for("static", filename="wiki/edit_iphone.css") }}" type= "text/css" rel="stylesheet" />
+<link media="only screen and (max-device-width: 480px)" href="{{ url_for("static", filename="edit_iphone.css") }}" type= "text/css" rel="stylesheet" />
 <!-- End iPhone -->
 {% endblock %}
 
 
-{% block script %}<script type="text/javascript" src="{{ url_for("static", filename="wiki/edit.js") }}"></script>
+{% block script %}<script type="text/javascript" src="{{ url_for("static", filename="edit.js") }}"></script>
 {% endblock%}
 
 

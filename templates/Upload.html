@@ -5,10 +5,10 @@
 
 {% block title %}Upload a File{% endblock %}
 
-{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="wiki/read.css") }}" media="screen" />
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
 <!-- Start iPhone -->
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-<link media="only screen and (max-device-width: 480px)" href="{{ url_for("static", filename="wiki/edit_iphone.css") }}" type= "text/css" rel="stylesheet" />
+<link media="only screen and (max-device-width: 480px)" href="{{ url_for("static", filename="edit_iphone.css") }}" type= "text/css" rel="stylesheet" />
 <!-- End iPhone -->
 {% endblock %}
 
@@ -28,7 +28,7 @@
 <h2>Uploaded Files</h2>
 <ul>
 {% for s in filenames %}
-<li><a href="{{ url_for("static", filename="wiki/upload/%s" %s) }}">{{ s }}</a></li>
+<li><a href="{{ url_for("static", filename="upload/%s" % s) }}">{{ s }}</a></li>
 {% endfor %} 
 </ul>
 {% endblock %}

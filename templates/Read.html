@@ -9,8 +9,8 @@
 
 {% block title %}{{ article.name }}{% endblock %}
 
-{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="wiki/read.css") }}" media="screen" />
-<link rel="stylesheet" href="{{ url_for("static", filename="wiki/print.css") }}" media="print" />
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
 {% endblock %}
 
 {% block script %}
@@ -21,8 +21,8 @@ MathJax.Hub.Config({
   </script>
 <script type="text/javascript"
    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="{{ url_for("static", filename="wiki/jquery.hotkeys-0.7.9.js") }}"></script>
-<script type="text/javascript" src="{{ url_for("static", filename="wiki/read.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="jquery.hotkeys-0.7.9.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="read.js") }}"></script>
 {% endblock%}
 
 
