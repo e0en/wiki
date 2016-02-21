@@ -27,7 +27,7 @@
 </form>
 <h2>Uploaded Files</h2>
 <ul>
-{% for s in file_names %}
+{% for s in filenames %}
 <li><a href="{{ url_for("static", filename="wiki/upload/%s" %s) }}">{{ s }}</a></li>
 {% endfor %} 
 </ul>

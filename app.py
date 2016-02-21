@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sqlite3
+import os
 from datetime import datetime, date
+
 from flask import Flask, redirect, url_for, g, render_template, Response,\
     request
 
@@ -79,9 +81,12 @@ def pagelist():
     return render_template("PageList.html", article_list=article_list)
 
 
-@app.route("/upload")
+@app.route("/upload", methods=["GET", "POST"])
 def upload():
-    return render_template("Upload.html")
+    dirname = os.path.dirname(os.path.realpath(__file__)) +\
+            "/static/wiki/upload"
+    filenames = [x for x in os.listdir(dirname) if x not in {".", ".."}]
+    return render_template("Upload.html", filenames=filenames)
 
 
 @app.route("/search", methods=['GET'])
