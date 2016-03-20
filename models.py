@@ -1,41 +1,55 @@
-from django.db import models
 from datetime import datetime
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Table, Column, Integer, String, DateTime, Text,\
+    ForeignKey
 
-# Create your models here.
-
-
-class Author(models.Model):
-    name = models.CharField(max_length=30)
-    password = models.CharField(max_length=16)
-    email = models.CharField(max_length=100)
+from database import Base
 
 
-class Article(models.Model):
-    name = models.CharField(max_length=100)
-    ip_address = models.CharField(max_length=32)
-    content = models.TextField()
-    markdown = models.TextField()
-    content_html = models.TextField()
-    time_create = models.DateTimeField(default=datetime.now, auto_now_add=True)
-    time_edit = models.DateTimeField(default=datetime.now, auto_now_add=True)
-    links = models.TextField(default='')
+history_authors = Table(
+    'wiki_history_author', Base.metadata,
+    Column('author_id', Integer, ForeignKey('wiki_authors.id')),
+    Column('history_id', Integer))
+    )
 
 
-class Media(models.Model):
-    filename = models.CharField(max_length=256)
-    time_create = models.DateTimeField(default=datetime.now, auto_now_add=True)
+class Author(Base):
+    __tablename__ = 'wiki_author'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(30))
+    password = Column(String(16))
+    email = Column(String(100))
 
 
-class History(models.Model):
-    name = models.CharField(max_length=100)
-    ip_address = models.CharField(max_length=32)
+class Article(Base):
+    __tablename__ = 'wiki_article'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    ip_address = Column(String(32))
+    content = Column(Text)
+    markdown = Column(Text)
+    content_html = Column(Text)
+    time_create = Column(DateTime, default=datetime.now)
+    time_edit = Column(DateTime, default=datetime.now,
+            onupdate=datetime.now)
+    links = Column(Text, default='')
 
-    author = models.ManyToManyField(Author)
-    content = models.TextField(default='')
-    time = models.DateTimeField(auto_now_add=True)
-    type = models.CharField(max_length=16, default='mod')
+
+class Media(Base):
+    __tablename__ = 'wiki_media'
+    id = Column(Integer, primary_key=True)
+    filename = Column(String(256))
+    time_create = Column(DateTime, default=datetime.now,
+            onupdate=datetime.now)
 
 
-class Settings(models.Model):
-    mainpage = models.ForeignKey(Article)
-    path = models.CharField(max_length=999)
+class History(Base):
+    __tablename__ = 'wiki_history'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    ip_address = Column(String(32))
+
+    author = relationship("Author", secondary=history_authors)
+    content = Column(Text, default='')
+    time = Column(DateTime, onupdate=datetime.now)
+    type = Column(String(16), default='mod')

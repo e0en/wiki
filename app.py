@@ -9,6 +9,7 @@ from flask import Flask, redirect, url_for, g, render_template, Response,\
     request
 
 from parser import Parser
+from database import db_session
 
 
 app = Flask(__name__)
@@ -60,14 +61,13 @@ def read(pagename):
 
 @app.route("/edit/<pagename>", methods=["POST", "GET"])
 def edit(pagename):
-    query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
-    article = query_db(query_str, one=True)
-    if article is None:
-        article = { "name": pagename }
-
     if request.method == "POST":
         return process_edit(article)
     else:
+        query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
+        article = query_db(query_str, one=True)
+        if article is None:
+            article = { "name": pagename }
         return render_template("Edit.html", article=article)
 
 
@@ -196,6 +196,11 @@ def jrnl():
 @app.route("/")
 def index():
     return redirect(url_for('read', pagename='MainPage'))
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
 
 if __name__ == '__main__':
