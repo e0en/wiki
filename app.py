@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import os
-import time
-from datetime import datetime, date
-
+from datetime import date
 from flask import Flask, redirect, url_for, g, render_template, Response,\
     request
 
 from parser import Parser
-from database import db_session
 
 
 app = Flask(__name__)
@@ -49,12 +46,14 @@ def read(pagename):
     if res is not None:
         res = dict(res)
         res['content_html'] = parser.parse_markdown(res['markdown'])
-        prev_query = "SELECT name FROM wiki_article WHERE name<'%s' ORDER BY name desc LIMIT 1" % pagename
-        next_query = "SELECT name FROM wiki_article WHERE name>'%s' ORDER BY name LIMIT 1" % pagename
+        prev_query = "SELECT name FROM wiki_article " + \
+            "WHERE name<'%s' ORDER BY name desc LIMIT 1" % pagename
+        next_query = "SELECT name FROM wiki_article " + \
+            "WHERE name>'%s' ORDER BY name LIMIT 1" % pagename
         prev_page = query_db(prev_query, one=True)
         next_page = query_db(next_query, one=True)
         return render_template("Read.html", article=res, prev_page=prev_page,
-                next_page=next_page)
+                               next_page=next_page)
     else:
         return redirect(url_for('search', q=pagename))
 
@@ -67,7 +66,7 @@ def edit(pagename):
         query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
         article = query_db(query_str, one=True)
         if article is None:
-            article = { "name": pagename }
+            article = {"name": pagename}
         return render_template("Edit.html", article=article)
 
 
@@ -143,7 +142,8 @@ def search():
 def history_list(pagename):
     # fetch history of the page of the given name
     try:
-        query = "SELECT * FROM wiki_history WHERE name='%s' AND type<>'new' ORDER BY id DESC" % pagename
+        query = "SELECT * FROM wiki_history " + \
+            "WHERE name='%s' AND type<>'new' ORDER BY id DESC" % pagename
         hlist = query_db(query)
     except:
         hlist = []
@@ -151,9 +151,9 @@ def history_list(pagename):
     if len(hlist) == 0:
         return redirect(url_for("read", pagename=pagename))
     else:
-        return render_template("HistoryList.html", 
-                history_list=hlist,
-                article_name=pagename)
+        return render_template("HistoryList.html",
+                               history_list=hlist,
+                               article_name=pagename)
 
 
 @app.route("/history/<history_id>")
@@ -200,7 +200,7 @@ def index():
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db_session.remove()
+    pass
 
 
 if __name__ == '__main__':
