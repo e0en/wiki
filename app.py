@@ -1,31 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sqlite3
 import os
 from datetime import date
 from flask import redirect, url_for, g, render_template, Response, request
 
 from __init__ import app
 from parser import Parser
-import secret
-
-
-DATABASE = secret.DATABASE
-
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row
-    return db
-
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+import model as M
 
 
 @app.teardown_appcontext
@@ -37,19 +18,14 @@ def close_connection(exception):
 
 @app.route("/read/<pagename>")
 def read(pagename):
-    query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
-    res = query_db(query_str, one=True)
+    res = M.Article(g).filter_by(pagename=pagename)
     parser = Parser()
 
     if res is not None:
         res = dict(res)
         res['content_html'] = parser.parse_markdown(res['markdown'])
-        prev_query = "SELECT name FROM wiki_article " + \
-            "WHERE name<'%s' ORDER BY name desc LIMIT 1" % pagename
-        next_query = "SELECT name FROM wiki_article " + \
-            "WHERE name>'%s' ORDER BY name LIMIT 1" % pagename
-        prev_page = query_db(prev_query, one=True)
-        next_page = query_db(next_query, one=True)
+        prev_page = M.Article(g).prev(pagename)
+        next_page = M.Article(g).next(pagename)
         return render_template("Read.html", article=res, prev_page=prev_page,
                                next_page=next_page)
     else:
@@ -61,8 +37,7 @@ def edit(pagename):
     if request.method == "POST":
         return process_edit(article)
     else:
-        query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
-        article = query_db(query_str, one=True)
+        article = M.Article(g).filter_by(pagename=pagename)
         if article is None:
             article = {"name": pagename}
         return render_template("Edit.html", article=article)
@@ -75,7 +50,7 @@ def process_edit(article):
 @app.route("/recentchanges")
 def recentchanges():
     query = "SELECT * FROM wiki_history ORDER BY time desc"
-    histlist = query_db(query)
+    histlist = M.query_db(query, g)
     hlist = []
     d_current = ''
     names_in_day = []
@@ -111,7 +86,7 @@ def recentchanges():
 @app.route("/pagelist")
 def pagelist():
     query_str = "SELECT name FROM wiki_article ORDER BY name"
-    article_list = query_db(query_str)
+    article_list = M.query_db(query_str, g)
     return render_template("PageList.html", article_list=article_list)
 
 
@@ -127,7 +102,7 @@ def upload():
 def search():
     query = request.args.get('q', '')
     query_str = "SELECT name FROM wiki_article WHERE name='%s'" % query
-    res = query_db(query_str, one=True)
+    res = M.query_db(query_str, g, one=True)
     if res:
         exact_match = res["name"]
     else:
@@ -142,7 +117,7 @@ def history_list(pagename):
     try:
         query = "SELECT * FROM wiki_history " + \
             "WHERE name='%s' AND type<>'new' ORDER BY id DESC" % pagename
-        hlist = query_db(query)
+        hlist = M.query_db(query, g)
     except:
         hlist = []
 
@@ -157,7 +132,7 @@ def history_list(pagename):
 @app.route("/history/<history_id>")
 def history(history_id):
     query = "SELECT * FROM wiki_history WHERE id=%s" % history_id
-    article = query_db(query, one=True)
+    article = M.query_db(query, g, one=True)
 
     if article is not None:
         parser = Parser()
@@ -176,9 +151,7 @@ def delete(pagename):
 
 @app.route("/raw/<pagename>")
 def raw(pagename):
-    query_str = "SELECT * FROM wiki_article WHERE name='%s'" % pagename
-    res = query_db(query_str, one=True)
-
+    res = M.Article(g).filter_by(pagename)
     if res is not None:
         return Response(res["markdown"], mimetype="text/plain")
     else:
@@ -194,11 +167,6 @@ def jrnl():
 @app.route("/")
 def index():
     return redirect(url_for('read', pagename='MainPage'))
-
-
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    pass
 
 
 if __name__ == '__main__':
