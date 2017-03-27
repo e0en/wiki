@@ -7,12 +7,12 @@ from flask import Flask, redirect, url_for, g, render_template, Response,\
     request
 
 from parser import Parser
+import secret
 
 
 app = Flask(__name__)
 
-
-DATABASE = 'e0enwiki.db'
+DATABASE = secret.DATABASE
 
 
 def get_db():
