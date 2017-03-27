@@ -1,0 +1,27 @@
+{% extends 'Base.html' %}
+
+{% block metatags %}
+<meta name="articleuri" content="{{ article.name }}" />
+{% endblock %}
+
+{% block title %}{{ article_name }} - History #{{ article.id }}{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="history.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
+{% endblock %}
+
+{% block script %}<script type="text/javascript" src="{{ url_for("static", filename="view.js") }}"></script>{% endblock%}
+
+
+{% block subTitle %}{{ article.name }} <span class="history_id"> - History {{ article.id }}</span>{% endblock %}
+{% block content %}
+<div id="content" class="content_read">
+{{ article.content_html|safe }}
+
+<p id="controls">
+<a href="{{ url_for("history_list", pagename=article.name) }}">Other Versions</a>
+<a href="{{ url_for("read", pagename=article.name) }}">Show current version</a>
+</p>
+</div>
+{% endblock %}

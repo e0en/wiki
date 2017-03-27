@@ -1,15 +1,14 @@
-{% extends 'wiki/Base.html' %}
+{% extends 'Base.html' %}
 
 {% block metatags %}
 {% endblock %}
 
 {% block title %}Upload a File{% endblock %}
 
-{% block css %}<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/read.css" media="screen" />
-<!-- <link rel="stylesheet" href="{{ MEDIA_URL }}wiki/edit.css" media="screen" /> -->
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
 <!-- Start iPhone -->
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-<link media="only screen and (max-device-width: 480px)" href="{{ MEDIA_URL }}wiki/edit_iphone.css" type= "text/css" rel="stylesheet" />
+<link media="only screen and (max-device-width: 480px)" href="{{ url_for("static", filename="edit_iphone.css") }}" type= "text/css" rel="stylesheet" />
 <!-- End iPhone -->
 {% endblock %}
 
@@ -22,14 +21,14 @@
 {% block content %}
 
 <p>You can upload your file here (smaller than 1GB)</p>
-<form action="../process_upload/" enctype="multipart/form-data" method="post" id="form_upload">
+<form action="#" enctype="multipart/form-data" method="post" id="form_upload">
 	<input type="file" name="file" />
 	<input type="submit" value="Upload This File" />	
 </form>
 <h2>Uploaded Files</h2>
 <ul>
-{% for s in file_names %}
-<li><a href="{{ MEDIA_URL }}wiki/upload/{{ s }}">{{ s }}</a></li>
+{% for s in filenames %}
+<li><a href="{{ url_for("static", filename="upload/%s" % s) }}">{{ s }}</a></li>
 {% endfor %} 
 </ul>
 {% endblock %}

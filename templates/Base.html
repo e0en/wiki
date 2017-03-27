@@ -6,7 +6,7 @@
 {% block metatags %}<meta name="articleuri" content="{{ escaped_article_name }}" />{% endblock %}
 <title>{% block title %} Page title {% endblock %}</title>
 
-{% block css %}<link rel="stylesheet" href="{{ MEDIA_URL }}wiki/read.css" media="screen" />{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />{% endblock %}
 {% if css_additional %}
 <style type="text/css">
 {{ css_additional }}
@@ -15,14 +15,14 @@
 
 <!-- Start iPhone -->
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-<link media="only screen and (max-device-width: 480px)" href="{{ MEDIA_URL }}wiki/iphone.css" type= "text/css" rel="stylesheet" />
+<link media="only screen and (max-device-width: 480px)" href="{{ url_for("static", filename="iphone.css") }}" type= "text/css" rel="stylesheet" />
 <!-- End iPhone -->
-<script type="text/javascript" src="{{MEDIA_URL}}wiki/jquery-1.3.2.min.js"></script>
-{% block script %}<script type="text/javascript" src="{{ MEDIA_URL }}wiki/edit.js"></script>{% endblock%}
+<script type="text/javascript" src="{{ url_for("static", filename="jquery-1.3.2.min.js") }}"></script>
+{% block script %}<script type="text/javascript" src="{{ url_for("static", filename="edit.js") }}"></script>{% endblock%}
 </head>
 <body>
 <div id="wrapper">
-{% include 'wiki/Nav.html' %}
+{% include 'Nav.html' %}
     <h1>{% block subTitle %}Sub title{% endblock %}</h1>
     {% block content %}
     {% endblock %}
