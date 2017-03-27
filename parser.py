@@ -3,8 +3,6 @@ import re
 import mistune
 from mistune_contrib import highlight, math
 
-import wikiSettings
-
 
 class MyRenderer(mistune.Renderer, math.MathRendererMixin):
     def block_code(self, code, lang):
@@ -32,7 +30,6 @@ class MyLexer(mistune.InlineLexer, math.MathInlineMixin):
             link = text
 
         return self.renderer.wiki_link(alt, link)
-
 
     def __init__(self, *args, **kwargs):
         super(MyLexer, self).__init__(*args, **kwargs)

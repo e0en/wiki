@@ -121,7 +121,7 @@ def pagelist():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     dirname = os.path.dirname(os.path.realpath(__file__)) +\
-            "/static/wiki/upload"
+            "/static/upload"
     filenames = [x for x in os.listdir(dirname) if x not in {".", ".."}]
     return render_template("Upload.html", filenames=filenames)
 
