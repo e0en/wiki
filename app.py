@@ -18,14 +18,14 @@ def close_connection(exception):
 
 @app.route("/read/<pagename>")
 def read(pagename):
-    res = M.Article(g).filter_by(pagename=pagename)
+    res = M.Article().filter_by(pagename=pagename)
     parser = Parser()
 
     if res is not None:
         res = dict(res)
         res['content_html'] = parser.parse_markdown(res['markdown'])
-        prev_page = M.Article(g).prev(pagename)
-        next_page = M.Article(g).next(pagename)
+        prev_page = M.Article().prev(pagename)
+        next_page = M.Article().next(pagename)
         return render_template("Read.html", article=res, prev_page=prev_page,
                                next_page=next_page)
     else:
@@ -37,7 +37,7 @@ def edit(pagename):
     if request.method == "POST":
         return process_edit(article)
     else:
-        article = M.Article(g).filter_by(pagename=pagename)
+        article = M.Article().filter_by(pagename=pagename)
         if article is None:
             article = {"name": pagename}
         return render_template("Edit.html", article=article)
@@ -50,7 +50,7 @@ def process_edit(article):
 @app.route("/recentchanges")
 def recentchanges():
     query = "SELECT * FROM wiki_history ORDER BY time desc"
-    histlist = M.query_db(query, g)
+    histlist = M.query_db(query)
     hlist = []
     d_current = ''
     names_in_day = []
@@ -86,7 +86,7 @@ def recentchanges():
 @app.route("/pagelist")
 def pagelist():
     query_str = "SELECT name FROM wiki_article ORDER BY name"
-    article_list = M.query_db(query_str, g)
+    article_list = M.query_db(query_str)
     return render_template("PageList.html", article_list=article_list)
 
 
@@ -102,7 +102,7 @@ def upload():
 def search():
     query = request.args.get('q', '')
     query_str = "SELECT name FROM wiki_article WHERE name='%s'" % query
-    res = M.query_db(query_str, g, one=True)
+    res = M.query_db(query_str, one=True)
     if res:
         exact_match = res["name"]
     else:
@@ -117,7 +117,7 @@ def history_list(pagename):
     try:
         query = "SELECT * FROM wiki_history " + \
             "WHERE name='%s' AND type<>'new' ORDER BY id DESC" % pagename
-        hlist = M.query_db(query, g)
+        hlist = M.query_db(query)
     except:
         hlist = []
 
@@ -132,7 +132,7 @@ def history_list(pagename):
 @app.route("/history/<history_id>")
 def history(history_id):
     query = "SELECT * FROM wiki_history WHERE id=%s" % history_id
-    article = M.query_db(query, g, one=True)
+    article = M.query_db(query, one=True)
 
     if article is not None:
         parser = Parser()
@@ -151,7 +151,7 @@ def delete(pagename):
 
 @app.route("/raw/<pagename>")
 def raw(pagename):
-    res = M.Article(g).filter_by(pagename)
+    res = M.Article().filter_by(pagename)
     if res is not None:
         return Response(res["markdown"], mimetype="text/plain")
     else:
