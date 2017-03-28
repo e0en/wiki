@@ -7,6 +7,7 @@ from flask import redirect, url_for, g, render_template, Response, request
 from __init__ import app
 from parser import Parser
 import model as M
+from models import Article
 
 
 @app.teardown_appcontext
@@ -18,14 +19,19 @@ def close_connection(exception):
 
 @app.route("/read/<pagename>")
 def read(pagename):
-    res = M.Article().filter_by(pagename=pagename)
+    res = Article.query.filter(Article.name == pagename).first()
     parser = Parser()
 
     if res is not None:
-        res = dict(res)
-        res['content_html'] = parser.parse_markdown(res['markdown'])
-        prev_page = M.Article().prev(pagename)
-        next_page = M.Article().next(pagename)
+        res.content_html = parser.parse_markdown(res.markdown)
+        prev_page = Article.query\
+            .filter(Article.name < pagename)\
+            .order_by(Article.name.desc())\
+            .first()
+        next_page = Article.query\
+            .filter(Article.name > pagename)\
+            .order_by(Article.name)\
+            .first()
         return render_template("Read.html", article=res, prev_page=prev_page,
                                next_page=next_page)
     else:
@@ -35,11 +41,12 @@ def read(pagename):
 @app.route("/edit/<pagename>", methods=["POST", "GET"])
 def edit(pagename):
     if request.method == "POST":
+        article = Article(name=pagename)
         return process_edit(article)
     else:
-        article = M.Article().filter_by(pagename=pagename)
+        article = Article.query.filter_by(name=pagename).first()
         if article is None:
-            article = {"name": pagename}
+            article = Article(name=pagename, markdown="")
         return render_template("Edit.html", article=article)
 
 
