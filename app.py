@@ -92,8 +92,9 @@ def recentchanges():
 
 @app.route("/pagelist")
 def pagelist():
-    query_str = "SELECT name FROM wiki_article ORDER BY name"
-    article_list = M.query_db(query_str)
+    article_list = Article.query.\
+        with_entities(Article.name).\
+        order_by(Article.name).all()
     return render_template("PageList.html", article_list=article_list)
 
 
@@ -158,9 +159,9 @@ def delete(pagename):
 
 @app.route("/raw/<pagename>")
 def raw(pagename):
-    res = M.Article().filter_by(pagename)
+    res = Article.query.filter(Article.name == pagename).first()
     if res is not None:
-        return Response(res["markdown"], mimetype="text/plain")
+        return Response(res.markdown, mimetype="text/plain")
     else:
         return redirect(url_for('search', q=pagename))
 
