@@ -1,9 +1,8 @@
-from datetime import datetime
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.automap import automap_base
 
-from database import engine
+from secret import DATABASE
 
 
 table_names = [
@@ -14,9 +13,14 @@ table_names = [
     'wiki_history_author'
 ]
 
+
+engine = create_engine('sqlite:////' + DATABASE)
+db_session = scoped_session(sessionmaker(bind=engine))
+
 metadata = MetaData()
 metadata.reflect(engine, only=table_names)
 Base = automap_base(metadata=metadata)
+Base.query = db_session.query_property()
 Base.prepare()
 
 
