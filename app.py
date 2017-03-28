@@ -3,14 +3,12 @@
 import sqlite3
 import os
 from datetime import date
-from flask import Flask, redirect, url_for, g, render_template, Response,\
-    request
+from flask import redirect, url_for, g, render_template, Response, request
 
+from __init__ import app
 from parser import Parser
 import secret
 
-
-app = Flask(__name__)
 
 DATABASE = secret.DATABASE
 
