@@ -6,7 +6,6 @@ from flask import redirect, url_for, g, render_template, Response, request
 
 from __init__ import app
 from parser import Parser
-import model as M
 from models import Article, History
 
 
