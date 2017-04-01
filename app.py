@@ -124,9 +124,10 @@ def search():
 def history_list(pagename):
     # fetch history of the page of the given name
     try:
-        query = "SELECT * FROM wiki_history " + \
-            "WHERE name='%s' AND type<>'new' ORDER BY id DESC" % pagename
-        hlist = M.query_db(query)
+        hlist = History.query.\
+                filter(History.type != 'new').\
+                filter(History.name == pagename).\
+                order_by(History.id.desc()).all()
     except:
         hlist = []
 
@@ -140,17 +141,14 @@ def history_list(pagename):
 
 @app.route("/history/<history_id>")
 def history(history_id):
-    query = "SELECT * FROM wiki_history WHERE id=%s" % history_id
-    article = M.query_db(query, one=True)
+    article = History.query.filter_by(id=history_id).first()
 
     if article is not None:
         parser = Parser()
-        history = dict(article)
-        history["content_html"] = parser.parse_markdown(article["content"])
-        print(history)
-        return render_template("History.html", article=history)
+        article.content_html = parser.parse_markdown(article.content)
+        return render_template("History.html", article=article)
     else:
-        return redirect(url_for("read", pagename=article["name"]))
+        return redirect(url_for("read", pagename=article.name))
 
 
 @app.route("/delete/<pagename>")
