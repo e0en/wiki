@@ -108,10 +108,12 @@ def upload():
 @app.route("/search", methods=['GET'])
 def search():
     query = request.args.get('q', '')
-    query_str = "SELECT name FROM wiki_article WHERE name='%s'" % query
-    res = M.query_db(query_str, one=True)
+    res = Article.query.\
+        with_entities(Article.name).\
+        filter_by(name=query).first()
+
     if res:
-        exact_match = res["name"]
+        exact_match = res.name
     else:
         exact_match = None
 
