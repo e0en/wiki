@@ -7,7 +7,7 @@ from flask import redirect, url_for, g, render_template, Response, request
 from __init__ import app
 from parser import Parser
 import model as M
-from models import Article
+from models import Article, History
 
 
 @app.teardown_appcontext
@@ -51,43 +51,42 @@ def edit(pagename):
 
 
 def process_edit(article):
-    return redirect(url_for("read", pagename=article["name"]))
+    return redirect(url_for("read", pagename=article.name))
 
 
 @app.route("/recentchanges")
 def recentchanges():
-    query = "SELECT * FROM wiki_history ORDER BY time desc"
-    histlist = M.query_db(query)
-    hlist = []
+    rows = History.query.order_by(History.time.desc()).all()
+    h_list = []
     d_current = ''
     names_in_day = []
-    titlelist = []
-    for item in histlist:
+    title_list = []
+    for r in rows:
         h = {}
-        day = item["time"].split(" ")[0]
-        h['name'] = item["name"]
-        h['name_esc'] = item["name"]
-        h['time_edit'] = item["time"].split(" ")[1].split(".")[0]
-        h['ip_address'] = item["ip_address"]
-        h['type'] = item["type"]
-        if item["name"] in titlelist:
+        day = str(r.time).split(" ")[0]
+        h['name'] = r.name
+        h['name_esc'] = r.name
+        h['time_edit'] = str(r.time).split(" ")[1].split(".")[0]
+        h['ip_address'] = r.ip_address
+        h['type'] = r.type
+        if r.name in title_list:
             continue
         else:
-            titlelist.append(item["name"])
+            title_list.append(r.name)
         if d_current == '':
-            d_current = item["time"].split(" ")[0]
-            tmp = {'date': d_current, 'changes': [h]}
-            names_in_day.append(item["name"] + ',' + item["type"])
-        elif d_current != day:
-            hlist.append(tmp)
-            tmp = {'date': day, 'changes': [h]}
-            names_in_day.append(item["name"] + ',' + item["type"])
             d_current = day
-        elif item["name"] + ',' + item["type"] not in names_in_day:
+            tmp = {'date': d_current, 'changes': [h]}
+            names_in_day.append(r.name + ',' + r.type)
+        elif d_current != day:
+            h_list.append(tmp)
+            tmp = {'date': day, 'changes': [h]}
+            names_in_day.append(r.name + ',' + r.type)
+            d_current = day
+        elif r.name + ',' + r.type not in names_in_day:
             tmp['changes'].append(h)
-            names_in_day.append(item["name"] + ',' + item["type"])
-    hlist.append(tmp)
-    return render_template("RecentChanges.html", history_list=hlist)
+            names_in_day.append(r.name + ',' + r.type)
+    h_list.append(tmp)
+    return render_template("RecentChanges.html", history_list=h_list)
 
 
 @app.route("/pagelist")
