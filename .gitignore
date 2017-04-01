@@ -1,5 +1,6 @@
 *.pyc
 *.db
+*.db-journal
 *.json
 .DS_store
 log.txt
