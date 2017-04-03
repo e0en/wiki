@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from datetime import date
+from datetime import date, datetime
 from flask import redirect, url_for, g, render_template, Response, request
 
 from __init__ import app
 from parser import Parser
-from models import Article, History
+from models import Article, History, db_session
 
 
 @app.teardown_appcontext
@@ -40,8 +40,7 @@ def read(pagename):
 @app.route("/edit/<pagename>", methods=["POST", "GET"])
 def edit(pagename):
     if request.method == "POST":
-        article = Article(name=pagename)
-        return process_edit(article)
+        return process_edit(pagename, request.form, request.remote_addr)
     else:
         article = Article.query.filter_by(name=pagename).first()
         if article is None:
@@ -49,8 +48,47 @@ def edit(pagename):
         return render_template("Edit.html", article=article)
 
 
-def process_edit(article):
-    return redirect(url_for("read", pagename=article.name))
+def process_edit(pagename, form, ip_addr):
+    content = form['content']
+    now = datetime.now()
+
+    article = Article.query.filter(Article.name == pagename).first()
+    is_new_page = article is None
+    if is_new_page:
+        article = Article(name=pagename, time_create=now)
+
+    if is_new_page or article.content.strip() != content.strip():
+        article.content = content
+        article.markdown = content
+        article.ip_address = ip_addr
+        article.content_html = Parser().parse_markdown(content)
+        article.time_edit = now
+        article.links = ''
+
+        h = History(name=pagename, content=content, ip_address=ip_addr,
+                    time=now)
+
+        if is_new_page:
+            h.type = 'new'
+            db_session.add(article)
+        else:
+            h.type = 'mod'
+            result_dict = {
+                'content': article.content,
+                'markdown': article.markdown,
+                'ip_address': article.ip_address,
+                'content_html': article.content_html,
+                'links': article.links,
+                'time_edit': article.time_edit,
+            }
+            db_session.query(Article).\
+                filter_by(name=pagename).\
+                update(result_dict)
+
+        db_session.add(h)
+        db_session.commit()
+
+    return redirect(url_for("read", pagename=pagename))
 
 
 @app.route("/recentchanges")
@@ -152,7 +190,17 @@ def history(history_id):
 
 @app.route("/delete/<pagename>")
 def delete(pagename):
-    return "delete"
+    article = Article.query.filter(Article.name == pagename).first()
+    if article is not None:
+        h = History(name=pagename,
+                    content=article.content,
+                    ip_address=request.remote_addr,
+                    time=datetime.now())
+        db_session.add(h)
+        Article.query.filter(Article.name == pagename).delete()
+        db_session.commit()
+
+    return redirect(url_for('read', pagename='MainPage'))
 
 
 @app.route("/raw/<pagename>")
