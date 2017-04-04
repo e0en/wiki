@@ -1,8 +1,0 @@
-install:
- * django, pygments, pyrss2gen
-
-run:
- * ./manage.py runserver --settings=settings
-
-deploy:
- ??
