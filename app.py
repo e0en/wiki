@@ -6,6 +6,7 @@ from flask import redirect, url_for, g, render_template, Response, request
 
 from __init__ import app
 from parser import Parser
+import latex
 from models import Article, History, db_session
 
 
@@ -22,7 +23,8 @@ def read(pagename):
     parser = Parser()
 
     if res is not None:
-        res.content_html = parser.parse_markdown(res.markdown)
+        processed = latex.preprocess(res.markdown)
+        res.content_html = parser.parse_markdown(processed)
         prev_page = Article.query\
             .filter(Article.name < pagename)\
             .order_by(Article.name.desc())\
