@@ -8,6 +8,7 @@
     -webkit-column-gap: 1em;
     list-style-type: decimal;
 }
+
 #page_list li {
     margin: 0.5em 0;
 }

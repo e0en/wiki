@@ -2,10 +2,8 @@ body {
     background-image: none;
     background-color: #693;
 }
-#wrapper {
-}
 
-form#edit {
+#edit {
     float: left;
     width: 100%;
     clear: both;
@@ -23,11 +21,13 @@ form#edit {
     display: block;
     font-size: 11pt;
 }
+
 #insert_pad {
     height: 100pt;
     width: 100%;
     display: none;
 }
+
 #tool_list {
     border-bottom: 1px solid #ccc;
     list-style: none;
@@ -35,25 +35,23 @@ form#edit {
     padding: 5px;
     display: none;
 }
+
 #tool_list li {
     display:inline;
     list-style-type: none;
 }
+
 #tool_list li a {
     padding: 5px;
     border: 1px solid #ccc;
     background: #eee;
 }
+
 #tool_list .selected a {
     border-bottom: 1px solid white;
     background: white;
 }
-/* 2010.02.04: disabled full preview functionality
-#preview {
-    width: 48%;
-    float: left;
-}
-*/
+
 input[type=submit] {
     position: relative;
     margin: 1em 0;
@@ -67,12 +65,15 @@ input[type=submit] {
     text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
     border: 0;
 }
+
 input[type=submit]:hover {
     background: #749a02;
 }
+
 input[type=submit]:active {
     top: 1px;
 }
+
 #search_suggestion {
     background: #eee;
     padding: 1em;
