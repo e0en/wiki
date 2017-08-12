@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 import os
 from datetime import date, datetime
-from flask import redirect, url_for, g, render_template, Response, request
+from flask import Flask, redirect, url_for, g, render_template, Response, request
 
-from __init__ import app
 from parser import Parser
 import latex
 from models import Article, History, db_session
+
+
+app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
