@@ -9,7 +9,7 @@ table_names = ['wiki_article', 'wiki_history']
 
 
 engine = create_engine('sqlite:////' + DATABASE)
-db_session = scoped_session(sessionmaker(bind=engine))
+db_session = scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 metadata = MetaData()
 metadata.reflect(engine, only=table_names)
