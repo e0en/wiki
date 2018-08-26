@@ -145,14 +145,6 @@ def pagelist():
     return render_template("PageList.html", article_list=article_list)
 
 
-@app.route("/upload", methods=["GET", "POST"])
-def upload():
-    dirname = os.path.dirname(os.path.realpath(__file__)) +\
-            "/static/upload"
-    filenames = [x for x in os.listdir(dirname) if x not in {".", ".."}]
-    return render_template("Upload.html", filenames=filenames)
-
-
 @app.route("/search", methods=['GET'])
 def search():
     query = request.args.get('q', '')
