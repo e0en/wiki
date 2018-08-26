@@ -7,6 +7,7 @@ var go_next = function() {
     else
         return false;
 };
+
 var go_prev = function() {
     a_prev = document.getElementById("nav_prev_page");
     if(a_prev != null) {
@@ -16,30 +17,47 @@ var go_prev = function() {
     else
         return false;
 };
+
 var go_rand = function() {
     window.location = '../random';
 };
+
 var go_jrnl = function() {
     window.location = '../jrnl';
 };
+
 var go_edit = function() {
     window.location = document.getElementById('control_edit').href;
 };
 
 var bind_all = function() {
-    $(document).bind('keyup', 'n', go_next);
-    $(document).bind('keyup', 'p', go_prev);
-    $(document).bind('keyup', 'a', go_rand);
-    $(document).bind('keyup', 'j', go_jrnl);
-    $(document).bind('keyup', 'e', go_edit);
+    document.onkeyup = function(e) {
+        switch (e.key) {
+            case 'p':
+                go_prev();
+                break;
+            case 'n':
+                go_next();
+                break;
+            case 'a':
+                go_rand();
+                break;
+            case 'j':
+                go_jrnl();
+                break;
+            case 'e':
+                go_edit();
+                break;
+            default:
+                return;
+        }
+    };
 };
+
 var unbind_all = function() {
-    $(document).unbind('keyup', 'n', go_next);
-    $(document).unbind('keyup', 'p', go_prev);
-    $(document).unbind('keyup', 'a', go_rand);
-    $(document).unbind('keyup', 'j', go_jrnl);
-    $(document).unbind('keyup', 'e', go_edit);
+    document.onkeyup = function(e) {};
 };
+
 window.onload = function() {
     var m = document.getElementsByTagName("meta");
     var articleURI = '';
@@ -50,13 +68,11 @@ window.onload = function() {
         }
     }
     content = document.getElementById("content");
-    /*content.ondblclick = function() {
-        window.location = "../edit/" + articleURI;
-    };*/
 
     bind_all();
-    $("#search_query").focus(function(){unbind_all()});
-    $("#search_query").blur(function(){bind_all()});
+    search_input = document.getElementById("search_query");
+    search_input.onfocus = unbind_all();
+    search_input.onblur = bind_all();
 
     redirect = document.getElementsByClassName("redirect");
     if (redirect.length > 0) {
