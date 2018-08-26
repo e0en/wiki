@@ -198,7 +198,8 @@ def delete(pagename):
         h = History(name=pagename,
                     content=article.content,
                     ip_address=request.remote_addr,
-                    time=datetime.now())
+                    time=datetime.now(),
+                    type='del')
         db_session.add(h)
         Article.query.filter(Article.name == pagename).delete()
         db_session.commit()
