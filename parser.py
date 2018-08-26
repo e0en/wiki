@@ -9,7 +9,7 @@ class MyRenderer(mistune.Renderer, math.MathRendererMixin):
         return highlight.block_code(code, lang, True)
 
     def wiki_link(self, alt, link):
-        return '<a href="%s">%s</a>' % (link, alt)
+        return f'<a href="{link}">{alt}</a>'
 
 
 class MyLexer(mistune.InlineLexer, math.MathInlineMixin):
@@ -37,10 +37,25 @@ class MyLexer(mistune.InlineLexer, math.MathInlineMixin):
         self.enable_wiki_link()
 
 
+def preprocess_redirect(raw_text):
+    regex = re.compile(r'#REDIRECT \[\[([^\[^\]]+)\]\]')
+
+    match = regex.search(raw_text)
+    if match:
+        link = match.group(1)
+        redir_str = f'Redirecting to <a href="{link}" class="redirect">{link}</a>'
+        new_text = raw_text.replace(match.group(0), redir_str)
+        return new_text
+    else:
+        return raw_text
+
+
 class Parser(object):
     def parse_markdown(self, raw_text):
         renderer = MyRenderer()
         inline = MyLexer(renderer)
         markdown = mistune.Markdown(renderer=renderer, inline=inline)
 
-        return markdown(raw_text)
+        processed = preprocess_redirect(raw_text)
+
+        return markdown(processed)

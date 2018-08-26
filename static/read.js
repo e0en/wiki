@@ -57,4 +57,10 @@ window.onload = function() {
     bind_all();
     $("#search_query").focus(function(){unbind_all()});
     $("#search_query").blur(function(){bind_all()});
+
+    redirect = document.getElementsByClassName("redirect");
+    if (redirect.length > 0) {
+        redirect = redirect[0];
+        window.location.replace(redirect.href);
+    }
 };
