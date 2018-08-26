@@ -84,3 +84,28 @@ input[type=submit]:active {
     font-size: 120%;
     font-weight: bold;
 }
+
+
+@media only screen and (max-width: 600px) {
+    #wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 1em;
+        border: 0;
+        min-width: 0;
+        float: left;
+        background-color: white;
+        box-sizing: border-box;
+    }
+
+    #editor {
+        width: 100%;
+        margin: 0;
+    }
+
+    #content {
+        width: 95%;
+        min-height: 40em;
+        font-size: 12pt;
+    }
+}

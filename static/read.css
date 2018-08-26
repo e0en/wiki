@@ -12,9 +12,7 @@
     float: left;
     background-color: white;
     padding: 1em;
-    border: 10px solid rgba(0,0,0,1);
-    -webkit-background-clip: padding-box;
-
+    border: 10px solid black;
 }
 
 h1 {
@@ -203,3 +201,21 @@ blockquote cite:before {
     content: " - "; 
 }
 
+@media only screen and (max-width: 600px) {
+    #wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 1em;
+        box-sizing: border-box;
+        border: 0;
+        min-width: 0;
+        float: left;
+        background-color: white;
+    }
+
+    nav li {
+        display: inline;
+        margin: 0;
+        padding-right: 0.5em;
+    }
+}
