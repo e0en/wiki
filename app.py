@@ -3,6 +3,7 @@
 import os
 from datetime import date, datetime
 from flask import Flask, redirect, url_for, g, render_template, Response, request
+from flask import send_from_directory
 
 from parser import Parser
 import latex
@@ -11,6 +12,11 @@ from models import Article, History, db_session
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+
+@app.route('/robots.txt')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 
 @app.teardown_appcontext
