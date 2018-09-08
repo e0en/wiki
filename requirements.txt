@@ -4,3 +4,4 @@ mistune-contrib
 Pygments
 SQLAlchemy
 gunicorn
+flask-login

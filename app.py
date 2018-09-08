@@ -4,13 +4,16 @@ import os
 from datetime import date, datetime
 from flask import Flask, redirect, url_for, g, render_template, Response, request
 from flask import send_from_directory
+from flask_login import LoginManager
 
 from parser import Parser
 import latex
 from models import Article, History, db_session
 
 
+login_manager = LoginManager()
 app = Flask(__name__)
+login_manager.init_app(app)
 app.url_map.strict_slashes = False
 
 
