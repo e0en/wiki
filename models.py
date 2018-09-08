@@ -5,7 +5,8 @@ from sqlalchemy.ext.automap import automap_base
 from secret import DATABASE
 
 
-table_names = ['wiki_article', 'wiki_history', 'admin_only_articles']
+# table_names = ['articles', 'histories', 'users']
+table_names = ['articles', 'histories']
 
 
 engine = create_engine('sqlite:////' + DATABASE)
@@ -18,6 +19,6 @@ Base.query = db_session.query_property()
 Base.prepare()
 
 
-Article = Base.classes.wiki_article
-History = Base.classes.wiki_history
-AdminOnly = Base.classes.admin_only_articles
+Article = Base.classes.articles
+History = Base.classes.histories
+# Users = Base.classes.users
