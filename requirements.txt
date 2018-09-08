@@ -5,3 +5,4 @@ Pygments
 SQLAlchemy
 gunicorn
 flask-login
+bcrypt

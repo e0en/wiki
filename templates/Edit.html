@@ -37,6 +37,10 @@
 		<div class="insert_tool" id="insert_tool_media">
 		</div>
 	    </div>
+	    <p>
+	        <label for="is_public">Public?</label>
+	        <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}  />
+	    </p>
             <textarea id="content" name="content">{{ article.markdown }}</textarea>
             <div><span id="count">0</span> bytes</div>
             <input type="submit" value="Apply Changes" />

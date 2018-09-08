@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "wiki_article" (
+CREATE TABLE IF NOT EXISTS "articles" (
     "id" INTEGER NOT NULL PRIMARY KEY,
     "name" VARCHAR(100) NOT NULL,
     "ip_address" VARCHAR(32) NOT NULL,
@@ -7,9 +7,11 @@ CREATE TABLE IF NOT EXISTS "wiki_article" (
     "time_create" DATETIME NOT NULL,
     "time_edit" DATETIME NOT NULL,
     "links" TEXT NOT NULL, 
-    "markdown" TEXT);
+    "markdown" TEXT,
+    "is_public" INTEGER NOT NULL DEFAULT 0
+);
 
-CREATE TABLE IF NOT EXISTS "wiki_history" (
+CREATE TABLE IF NOT EXISTS "histories" (
     "id" INTEGER NOT NULL PRIMARY KEY,
     "name" VARCHAR(100) NOT NULL,
     "ip_address" VARCHAR(32) NOT NULL,
@@ -18,6 +20,8 @@ CREATE TABLE IF NOT EXISTS "wiki_history" (
     "type" VARCHAR(16) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "admin_only_articles" (
-    "id" INTEGER NOT NULL PRIMARY KEY
+CREATE TABLE IF NOT EXISTS "users" (
+    "id" INTEGER NOT NULL PRIMARY KEY,
+    "hashed_pw" TEXT NOT NULL,
+    "salt" TEXT NOT NULL
 );

@@ -37,12 +37,14 @@ MathJax.Hub.Config({
 <div id="content" class="content_read">
 {{ article.content_html|safe }}
 
+{% if current_user.is_authenticated %}
 <p id="controls">
 <a id="control_edit" href="{{ url_for("edit", pagename=article.name) }}">Edit</a>
 <a href="{{ url_for("history_list", pagename=article.name) }}">History</a>
 <a href="{{ url_for("delete", pagename=article.name) }}">Delete</a>
 <a href="{{ url_for("raw", pagename=article.name) }}">Raw</a>
 </p>
+{% endif %}
 
 <nav id="prev_next">
 {% if prev_page %}

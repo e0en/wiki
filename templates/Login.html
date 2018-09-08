@@ -1,0 +1,25 @@
+{% extends 'Base.html' %}
+
+{% block metatags %}
+{% endblock %}
+
+{% block title %}Login{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+{% endblock %}
+
+
+{% block script %}
+{% endblock%}
+
+
+{% block subTitle %}{% endblock %}
+{% block content %}
+
+<form action="#" method="POST">
+	<p>
+	    <input type="password" name="password" value="password" />
+	    <input type="submit" value="Login" />
+	</p>
+</form>
+{% endblock %}
