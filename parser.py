@@ -6,7 +6,7 @@ from mistune_contrib import highlight, math
 
 class MyRenderer(mistune.Renderer):
     def block_code(self, code, lang):
-        return highlight.block_code(code, lang, True)
+        return highlight.block_code(code, lang, False)
 
     def wiki_link(self, alt, link):
         return f'<a href="{link}">{alt}</a>'
