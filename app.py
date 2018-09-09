@@ -75,8 +75,7 @@ def read(pagename):
     is_logged_in = current_user.is_authenticated
 
     if res is not None and (is_logged_in or res.is_public):
-        processed = latex.preprocess(res.markdown)
-        res.content_html = parser.parse_markdown(processed)
+        res.content_html = parser.parse_markdown(res.markdown)
         prev_page = Article.query\
             .filter(Article.name < pagename)\
             .order_by(Article.name.desc())\

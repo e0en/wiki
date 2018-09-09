@@ -4,7 +4,7 @@ import mistune
 from mistune_contrib import highlight, math
 
 
-class MyRenderer(mistune.Renderer, math.MathRendererMixin):
+class MyRenderer(mistune.Renderer):
     def block_code(self, code, lang):
         return highlight.block_code(code, lang, True)
 
@@ -12,13 +12,20 @@ class MyRenderer(mistune.Renderer, math.MathRendererMixin):
         return f'<a href="{link}">{alt}</a>'
 
 
-class MyLexer(mistune.InlineLexer, math.MathInlineMixin):
+class MyLexer(mistune.InlineLexer):
+    def enable_math(self):
+        self.rules.block_math = re.compile(r'^\$\$(.*?)\$\$', re.DOTALL)
+        self.default_rules.insert(0, 'block_math')
+
     def enable_wiki_link(self):
         self.rules.wiki_link = re.compile(
             r'\[\['
             r'([^\[^\]]+)'
             r'\]\]')
         self.default_rules.insert(0, 'wiki_link')
+
+    def output_block_math(self, m):
+        return '$$%s$$' % m.group(1)
 
     def output_wiki_link(self, m):
         text = m.group(1)
