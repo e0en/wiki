@@ -1,3 +1,4 @@
+<header>
 <ul id="nav">
     <li><a href="{{ url_for("read", pagename="MainPage") }}">MainPage</a></li>
     <li><a href="{{ url_for("recentchanges") }}">RecentChanges</a></li>
@@ -5,6 +6,6 @@
     <li><a href="{{ url_for("jrnl") }}">Journal</a></li>
 </ul>
 <form id="search" action="{{ url_for("search") }}">
-Search:
-<input type="text" id="search_query" name="q" />
+<input type="text" id="search_query" name="q" placeholder="Search" />
 </form>
+</header>

@@ -10,7 +10,9 @@
 {% endblock %}
 
 
-{% block script %}{% endblock%}
+{% block script %}
+<script src="{{ url_for("static", filename="read.js") }}"></script>
+{% endblock%}
 
 {% block subTitle %}RecentChanges{% endblock %}
 {% block content %}

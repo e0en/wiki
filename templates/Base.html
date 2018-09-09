@@ -2,23 +2,11 @@
 <html lang="ko">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-{% block metatags %}
-    <meta name="articleuri" content="{{ escaped_article_name }}" />
-{% endblock %}
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block metatags %}<meta name="articleuri" content="{{ escaped_article_name }}" />{% endblock %}
     <title>{% block title %} Page title {% endblock %}</title>
-
-{% block css %}
-    <link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
-{% endblock %}
-
-{% if css_additional %}
-    <style type="text/css">
-{{ css_additional }}
-    </style>
-{% endif %}
-
-{% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>{% endblock%}
+{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />{% endblock %}
+{% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>{% endblock %}
     </head>
     <body>
         <div id="wrapper">
@@ -27,9 +15,5 @@
     {% block content %}
     {% endblock %}
         </div>
-
-        <p id="validations">
-            <a href="http://validator.w3.org/check/referer">XHTML validation</a>
-        </p>
     </body> 
 </html>

@@ -1,54 +1,46 @@
-body {
-background: #Fc3;
+h2 {
+    float: left;
+    clear: both;
+    width: 100%;
 }
 
-h2 {
-float: left;
-clear: both;
-width: 100%;
-}
 .page_list {
-	float: left;
-	clear: both;
-	margin: 0;
-	padding: 0;
+    float: left;
+    clear: both;
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
 }
 
 .page_list li { 
-	float: left;
-	clear: both;
-	margin-bottom: 0.5em;
-	list-style-type: none;
+    float: left;
+    clear: both;
+    list-style-type: none;
 }
 
 .page_list li .time {
-	display: block;
-	float: left;
-	font-size: 80%;
-	margin-right: 1em;
-
+    display: block;
+    float: left;
+    margin-right: 1em;
 }
 
 .page_list li .name {
-	display: block;
-	float: left;
+    display: block;
+    float: left;
 }
 
 .page_list li .ip_address {
-	display: block;
-	float: left;
-	font-size: 80%;
-	color: #999;
-	width: 8em;
-	text-align: center;
-	margin-right: 1em;
+    display: block;
+    float: left;
+    width: 8em;
+    text-align: center;
+    margin-right: 1em;
 }
 
 .page_list li .type {
-	display: block;
-	float: left;
-	font-size: 80%;
-	color: black;
-	width: 4em;
-	text-align: center;
+    display: block;
+    float: left;
+    color: black;
+    width: 4em;
+    text-align: center;
 }

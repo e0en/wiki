@@ -1,109 +1,76 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    background: white;
-    font-size: 90%;
-    font-family: NanumGothic, '나눔고딕', Malgun Gothic, '맑은 고딕', gulim, sans-serif;
+﻿html, input, textarea {
+    font-family: sans-serif;
+    font-size: 16px;
+    text-size-adjust: 100%;
 }
 
-#wrapper {
-    width: 80%;
-    margin: 1em 2em;
-    float: left;
-    background-color: white;
+body {
+    margin: 0 auto;
     padding: 1em;
-    border: 10px solid black;
-}
-
-h1 {
-    margin: 0 0 0.4em 0;
-    padding: 0 0 0.2em 0;
-    font-size: 300%;
-    clear: both;
+    max-width: 100%;
+    line-height: 1.5em;
+    background: white;
 }
 
 .section_anchor {
     color: #c00;
 }
 
+header {
+    width: 100%;
+}
+
 #nav {
-    margin: 0;
+    display: inline;
+    margin-bottom: 1em;
     padding: 0;
     text-align: left;
-    float: left;
 }
 #nav li {
     display: inline;
     margin: 0;
-    padding: 0 1.7em 0 0;
+    padding: 0 0.5em 0 0;
 }
 #nav li a {
     text-decoration: none;
     color: #999;
 }
-#nav li a:hover {
-    color: black;
-    font-weight: bold;
-    text-decoration: underline;
-}
 
-#search {
-    float: right;
+header form {
+    display: inline;
 }
 
 #search_query {
+    box-sizing: border-box;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 0.5em;
-    font-weight: bold;
-    font-family: NanumGothic, '나눔고딕', Malgun Gothic, '맑은 고딕', gulim, sans-serif;
-}
+    border-radius: 8px;
+    padding: 8px;
 
-#validations {
-    clear: both;
-    text-align: center;
-}
-
-#validations a {
-    opacity: 0.3;
-    color: black;
-    font-weight: bold;
-    text-decoration: none;
+    width: 100%;
+    margin: 8px 0;
 }
 
 #prev_next a {
-    color: #69c;
-    margin: 1em;
+    color: #999;
 }
 
 #nav_prev_page::before {
     content: '<< ';
 }
 
+#nav_prev_page {
+    margin-right: 1em;
+}
+
 #nav_next_page::after {
     content: ' >>';
 }
 
-/* content styles */
-.content_read {
-    line-height: 1.7em;
-    font-family: NanumMyongjo, '나눔명조', batang, serif;
-}
 
 /* Header */
 h2 {
     padding-bottom: 0.2em;
     border-bottom: 1px solid #ccc;
-    font-family: NanumGothic, '나눔고딕', Malgun Gothic, '맑은 고딕', gulim, sans-serif;
-}
-
-h3,h4,h5,h6 {
-    margin-bottom: 0;
-    font-family: NanumGothic, '나눔고딕', Malgun Gothic, '맑은 고딕', gulim, sans-serif;
-}
-
-p {
-    margin: 0.5em 0 1em 0;
 }
 
 em,strong {
@@ -133,15 +100,9 @@ em,strong {
     color: green;
 }
 
-.code {
-    margin: 0 1em;
-}
-
 .code .highlight {
-    padding: 0 1em;
-    font-size: 110%;
-    line-height: 1em;
-    font-family: NanumGothicCoding;
+    margin: 0 1em;
+    font-family: monospace;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
@@ -201,21 +162,17 @@ blockquote cite:before {
     content: " - "; 
 }
 
-@media only screen and (max-width: 600px) {
-    #wrapper {
-        width: 100%;
-        margin: 0;
+@media only screen and (min-width: 768px) {
+    body {
         padding: 1em;
-        box-sizing: border-box;
-        border: 0;
-        min-width: 0;
-        float: left;
-        background-color: white;
+        max-width: 50em;
     }
 
-    nav li {
-        display: inline;
-        margin: 0;
-        padding-right: 0.5em;
+    #search_query {
+        width: 10em;
+    }
+
+    #nav li {
+        padding: 0 1em 0 0;
     }
 }

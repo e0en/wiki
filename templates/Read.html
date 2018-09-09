@@ -36,15 +36,7 @@ MathJax.Hub.Config({
 {% endif %}
 <div id="content" class="content_read">
 {{ article.content_html|safe }}
-
-{% if current_user.is_authenticated %}
-<p id="controls">
-<a id="control_edit" href="{{ url_for("edit", pagename=article.name) }}">Edit</a>
-<a href="{{ url_for("history_list", pagename=article.name) }}">History</a>
-<a href="{{ url_for("delete", pagename=article.name) }}">Delete</a>
-<a href="{{ url_for("raw", pagename=article.name) }}">Raw</a>
-</p>
-{% endif %}
+</div>
 
 <nav id="prev_next">
 {% if prev_page %}
@@ -54,5 +46,13 @@ MathJax.Hub.Config({
 <a id="nav_next_page" href="{{ url_for("read", pagename=next_page.name) }}">{{next_page.name}}</a>
 {% endif %}
 </nav>
-</div>
+
+{% if current_user.is_authenticated %}
+<p id="controls">
+<a id="control_edit" href="{{ url_for("edit", pagename=article.name) }}">Edit</a>
+<a href="{{ url_for("history_list", pagename=article.name) }}">History</a>
+<a href="{{ url_for("raw", pagename=article.name) }}">Raw</a>
+<a href="{{ url_for("logout") }}">Logout</a>
+</p>
+{% endif %}
 {% endblock %}

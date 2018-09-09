@@ -24,19 +24,6 @@
 
     <form action="#" method="POST" id="edit">
         <div id="editor">
-	    <div id="insert_pad">
-		<ul id="tool_list">
-		    <li class="selected"><a href="#insert_tool_link">Link</a></li>
-		    <li><a href="#insert_tool_latex">LaTeX</a></li>
-		    <li><a href="#insert_tool_media">Media</a></li>
-		</ul>
-		<div class="insert_tool" id="insert_tool_link">
-		</div>
-		<div class="insert_tool" id="insert_tool_latex">
-		</div>
-		<div class="insert_tool" id="insert_tool_media">
-		</div>
-	    </div>
 	    <p>
 	        <label for="is_public">Public?</label>
 	        <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}  />
@@ -46,8 +33,5 @@
             <input type="submit" value="Apply Changes" />
             <p><a href="{{ url_for("read", pagename=article.name) }}">Read This Article</a></p>
         </div>
-        <!-- preview disabled
-	<div id="preview" class="content_read">Preview not loaded</div>
-	-->
     </form>
 {% endblock %}
