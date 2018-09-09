@@ -28,7 +28,7 @@ app.url_map.strict_slashes = False
 
 @app.route('/robots.txt')
 def static_from_root():
-    return send_from_directory(app.static_folder, request.path[1:])
+    return send_from_directory(static_folder, request.path[1:])
 
 
 @app.teardown_appcontext
@@ -84,8 +84,13 @@ def read(pagename):
             .filter(Article.name > pagename)\
             .order_by(Article.name)\
             .first()
-        return render_template('Read.html', article=res, prev_page=prev_page,
+        body = render_template('Read.html', article=res,
+                               prev_page=prev_page,
                                next_page=next_page)
+        t_edit = res.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        resp = Response(body)
+        resp.headers['Last-Modified'] = t_edit
+        return resp
     else:
         return redirect(url_for('search', q=pagename))
 
@@ -99,7 +104,13 @@ def edit(pagename):
         article = Article.query.filter_by(name=pagename).first()
         if article is None:
             article = Article(name=pagename, markdown='')
-        return render_template('Edit.html', article=article)
+            article.time_edit = datetime.now()
+
+        t_edit = article.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        body = render_template('Edit.html', article=article)
+        resp = Response(body)
+        resp.headers['Last-Modified'] = t_edit
+        return resp
 
 
 def process_edit(pagename, form, ip_addr):
