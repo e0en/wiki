@@ -14,7 +14,10 @@ class MyRenderer(mistune.Renderer):
 
 class MyLexer(mistune.InlineLexer):
     def enable_math(self):
+        self.rules.text = re.compile(r'^[\s\S]+?(?=[\\<!\[_*`~]|https?://| {2,}\n|$|\$)')
+        self.rules.inline_math = re.compile(r'^\$(.*?)\$')
         self.rules.block_math = re.compile(r'^\$\$(.*?)\$\$', re.DOTALL)
+        self.default_rules.insert(0, 'inline_math')
         self.default_rules.insert(0, 'block_math')
 
     def enable_wiki_link(self):
@@ -23,6 +26,9 @@ class MyLexer(mistune.InlineLexer):
             r'([^\[^\]]+)'
             r'\]\]')
         self.default_rules.insert(0, 'wiki_link')
+
+    def output_inline_math(self, m):
+        return '$%s$' % m.group(1)
 
     def output_block_math(self, m):
         return '$$%s$$' % m.group(1)
