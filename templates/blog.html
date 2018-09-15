@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="articleuri" content="{{ escaped_article_name }}" />
+
+    <title>{{ article.name[5:] }}</title>
+
+    <link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="pygments-github.css") }}" media="screen" />
+</head>
+<body>
+    <div id="wrapper">
+        <h1>{{ article.name[5:] }}</h1>
+    <div id="content" class="content_read">
+{{ article.content_html|safe }}
+    </div>
+</body>
+</html>

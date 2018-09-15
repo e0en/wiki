@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Archive</title>
+
+    <link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="pygments-github.css") }}" media="screen" />
+</head>
+<body>
+    <div id="wrapper">
+        <h1>Archive</h1>
+        {% if article_list %}
+        <ul id="page_list">
+            {% for a in article_list %}
+            <li><span class="name">
+                <a href="{{ url_for("read", pagename=a) }}">{{ a }}</a>
+            </span></li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <p>No postings yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+
+
