@@ -69,12 +69,9 @@ def logout():
 @app.route('/read/<pagename>')
 def read(pagename):
     res = Article.query.filter(Article.name == pagename).first()
-    parser = Parser()
-
     is_logged_in = current_user.is_authenticated
 
     if res is not None and (is_logged_in or res.is_public):
-        res.content_html = parser.parse_markdown(res.markdown)
         prev_page = Article.query\
             .filter(Article.name < pagename)\
             .order_by(Article.name.desc())\
