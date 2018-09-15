@@ -247,16 +247,15 @@ def pagelist():
 def search():
     query = request.args.get('q', '')
 
-    query_obj = Article.query.\
+    matches = Article.query.\
         with_entities(Article.name).\
-        filter(Article.name.like(f'%{query}%'))
-
-    matches = [x[0] for x in query_obj.all()]
-
+        filter(Article.name.like(f'%{query}%')).\
+        all()
+    matches = [x.name for x in matches]
     exact_match = [a for a in matches if a == query]
 
     if exact_match:
-        exact_match = exact_match
+        exact_match = exact_match[0]
     else:
         exact_match = None
 
