@@ -1,7 +1,7 @@
 import re
 
 import mistune
-from mistune_contrib import highlight, math
+from mistune_contrib import highlight
 
 
 class MyRenderer(mistune.Renderer):
@@ -9,12 +9,13 @@ class MyRenderer(mistune.Renderer):
         return highlight.block_code(code, lang, False)
 
     def wiki_link(self, alt, link):
-        return f'<a href="{link}">{alt}</a>'
+        return f'<a class="link_inside" href="{link}">{alt}</a>'
 
 
 class MyLexer(mistune.InlineLexer):
     def enable_math(self):
-        self.rules.text = re.compile(r'^[\s\S]+?(?=[\\<!\[_*`~]|https?://| {2,}\n|$|\$)')
+        regex_text = r'^[\s\S]+?(?=[\\<!\[_*`~]|https?://| {2,}\n|$|\$)'
+        self.rules.text = re.compile(regex_text)
         self.rules.inline_math = re.compile(r'^\$(.*?)\$')
         self.rules.block_math = re.compile(r'^\$\$(.*?)\$\$', re.DOTALL)
         self.default_rules.insert(0, 'inline_math')

@@ -92,12 +92,16 @@ em,strong {
     list-style-type: square;
 }
 
-.link_inside_nonexist {
-    color: red;
+.content_read a {
+    color: green;
 }
 
-.link_external {
-    color: green;
+.content_read a.link_inside {
+    color: blue;
+}
+
+.link_inside_nonexist {
+    color: red;
 }
 
 .code .highlight {
