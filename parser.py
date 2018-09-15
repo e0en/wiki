@@ -75,12 +75,23 @@ class Parser(object):
     def __init__(self):
         self.renderer = MyRenderer()
 
+    def gen_backlink_html(self, backlinks):
+        if backlinks:
+            result = ['<h2>Backlinks</h2>']
+            result += ['<ul class="backlinks">']
+            for l in backlinks:
+                result += [f'<li><a class="link_inside" '
+                           f'href="{l}">{l}</a></li>']
+            result += ['</ul>']
+            return '\n'.join(result)
+        else:
+            return ''
+
     def parse_markdown(self, raw_text):
         inline = MyLexer(self.renderer)
         markdown = mistune.Markdown(renderer=self.renderer, inline=inline)
 
         processed = preprocess_redirect(raw_text)
-
         return markdown(processed)
 
     @property

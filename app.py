@@ -90,6 +90,13 @@ def read(pagename):
         res = Article.query.filter(Article.url_name == pagename).first()
 
     if res is not None and (is_logged_in or res.is_public):
+        p = Parser()
+        res.content_html = p.parse_markdown(res.content)
+
+        backlinks = Link.query.filter_by(to_name=pagename).all()
+        backlinks = [l.from_name for l in backlinks]
+        res.content_html += p.gen_backlink_html(backlinks)
+
         prev_page = Article.query\
             .filter(Article.name < pagename)\
             .order_by(Article.name.desc())\
@@ -175,10 +182,16 @@ def process_edit(pagename, form, ip_addr):
 
         all_names = Article.query.with_entities(Article.name).all()
         all_names = [x.name for x in all_names]
-        Link.query.filter(Link.from_name == pagename).delete()
+        existing_links = Link.query.filter_by(from_name=pagename).all()
+        for l in existing_links:
+            db_session.delete(l)
+        db_session.commit()
+
+        added_names = set()
         for l in parser.wiki_links:
-            if l in all_names:
+            if l in all_names and l not in added_names:
                 new_link = Link(from_name=pagename, to_name=l)
+                added_names.add(l)
                 db_session.add(new_link)
 
         h = History(name=pagename, content=content, ip_address=ip_addr,

@@ -83,6 +83,10 @@ em,strong {
     text-align: center;
 }
 
+.content_read {
+    margin-bottom: 16px;
+}
+
 .content_read ul,ol {
     margin: 0;
     padding-left: 1.5em;
