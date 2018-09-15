@@ -29,4 +29,5 @@ Base.query = db_session.query_property()
 
 Article = Base.classes.articles
 History = Base.classes.histories
+Link = Base.classes.links
 

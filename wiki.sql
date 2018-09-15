@@ -26,3 +26,9 @@ CREATE TABLE IF NOT EXISTS "users" (
     "hashed_pw" TEXT NOT NULL,
     "salt" TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS "links" (
+    "id" INTEGER NOT NULL PRIMARY KEY,
+    "from_name" VARCHAR(100) NOT NULL,
+    "to_name" VARCHAR(100) NOT NULL
+);
