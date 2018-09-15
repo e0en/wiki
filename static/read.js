@@ -74,14 +74,20 @@ window.onload = function() {
     search_input.onfocus = unbind_all();
     search_input.onblur = bind_all();
 
-    redirect = document.getElementsByClassName("redirect");
-    if (redirect.length > 0) {
-        redirect = redirect[0];
-        window.location.replace(redirect.href);
-    }
-
     renderMathInElement(document.body, {'delimiters': [
       {left: "$$", right: "$$", display: true},
       {left: "$", right: "$", display: false},
     ]});
+
+
+    redirect = document.getElementsByClassName("redirect");
+    if (redirect.length > 0) {
+        redirect = redirect[0];
+		function sleep(ms) {
+		  return new Promise(resolve => setTimeout(resolve, ms));
+		}
+		sleep(2000).then(() => {
+			window.location.replace(redirect.href);
+		});
+    }
 };

@@ -56,7 +56,8 @@ def preprocess_redirect(raw_text):
     match = regex.search(raw_text)
     if match:
         link = match.group(1)
-        redir_str = f'Redirecting to <a href="{link}" class="redirect">{link}</a>'
+        redir_str = (f'Redirecting to <a href="{link}" class="redirect">'
+                     f'{link}</a>')
         new_text = raw_text.replace(match.group(0), redir_str)
         return new_text
     else:
