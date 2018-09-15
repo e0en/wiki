@@ -5,42 +5,39 @@ h2 {
 }
 
 .page_list {
-    float: left;
-    clear: both;
     margin: 0;
     padding: 0;
     font-family: monospace;
+    font-size: 12px;
 }
 
 .page_list li { 
-    float: left;
-    clear: both;
     list-style-type: none;
 }
 
-.page_list li .time {
-    display: block;
-    float: left;
+.page_list .time {
+    display: inline-block;
     margin-right: 1em;
 }
 
-.page_list li .name {
-    display: block;
-    float: left;
-}
-
-.page_list li .ip_address {
-    display: block;
-    float: left;
+.page_list .ip_address {
+    display: none;
     width: 8em;
     text-align: center;
     margin-right: 1em;
 }
 
-.page_list li .type {
-    display: block;
-    float: left;
-    color: black;
-    width: 4em;
-    text-align: center;
+.page_list .name.del a {
+    color: #999;
+    text-decoration: line-through;
+}
+
+.page_list .name.new a {
+    font-weight: bold;
+}
+
+@media only screen and (min-width: 768px) {
+    .page_list .ip_address {
+        display: inline-block;
+    }
 }

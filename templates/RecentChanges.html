@@ -23,8 +23,7 @@
         <li>
         <span class="time">{{ d.time_edit }}</span> 
 		<span class="ip_address">{{ d.ip_address }}</span>
-		<span class="type">{{ d.type }}</span>
-        <span class="name"><a href="{{ url_for("read", pagename=d.name_esc) }}">{{ d.name }}</a></span>
+        <span class="name {{d.type}}"><a href="{{ url_for("read", pagename=d.name_esc) }}">{{ d.name }}</a></span>
         <!-- <span class="author">{{ h.author }}</span> -->
         </li>
 {% endfor %}
