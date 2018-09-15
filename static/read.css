@@ -1,6 +1,6 @@
 ﻿html, input, textarea {
     font-family: sans-serif;
-    font-size: 12px;
+    font-size: 16px;
     text-size-adjust: 100%;
 }
 
@@ -175,9 +175,6 @@ div.highlight {
 }
 
 @media only screen and (min-width: 768px) {
-    html, input, textarea {
-        font-size: 16px;
-    }
     body {
         padding: 1em;
         max-width: 50em;
