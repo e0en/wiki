@@ -217,16 +217,21 @@ def search():
 
     query_obj = Article.query.\
         with_entities(Article.name).\
-        filter_by(name=query)
+        filter(Article.name.like(f'%{query}%'))
 
-    res = query_obj.first()
+    matches = [x[0] for x in query_obj.all()]
 
-    if res:
-        exact_match = res.name
+    exact_match = [a for a in matches if a == query]
+
+    if exact_match:
+        exact_match = exact_match
     else:
         exact_match = None
 
-    return render_template('Search.html', query=query, exact_match=exact_match)
+    return render_template('Search.html',
+                           query=query,
+                           exact_match=exact_match,
+                           match_list=matches)
 
 
 @app.route('/history_list/<pagename>')
