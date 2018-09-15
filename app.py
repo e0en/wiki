@@ -9,6 +9,7 @@ from flask_login import LoginManager, login_required
 from flask_login import current_user
 from flask_login import login_user, logout_user
 from bcrypt import checkpw
+from sqlalchemy.sql.expression import func
 
 from parser import Parser
 from models import Article, History, User, db_session
@@ -106,6 +107,14 @@ def read(pagename):
         return resp
     else:
         return redirect(url_for('search', q=pagename))
+
+
+@app.route('/random')
+def random():
+    res = Article.query.\
+        order_by(func.random()).\
+        first()
+    return redirect(url_for('read', pagename=res.name))
 
 
 @app.route('/edit/<pagename>', methods=['POST', 'GET'])
