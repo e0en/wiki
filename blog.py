@@ -23,7 +23,7 @@ def static_from_root():
 def query_post(pagename):
     return Article.query.\
         filter(Article.is_public == 1).\
-        filter(Article.name.like(f'blog:{pagename}%')).\
+        filter(Article.url_name.like(f'blog-{pagename}%')).\
         order_by(Article.time_create.desc())
 
 
@@ -39,8 +39,8 @@ def read(pagename):
     res = query_post(pagename).first()
 
     if res is not None and res.is_public:
-        if res.name[5:] != pagename:
-            return redirect(url_for('read', pagename=res.name[5:]))
+        if res.url_name[5:] != pagename:
+            return redirect(url_for('read', pagename=res.url_name[5:]))
         body = render_template('blog.html', article=res)
         t_edit = res.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
         resp = Response(body)
@@ -53,7 +53,6 @@ def read(pagename):
 @app.route('/archive')
 def archive():
     article_list = query_post('').all()
-    article_list = [a.name[5:] for a in article_list]
     return render_template('blog_archive.html', article_list=article_list)
 
 
@@ -61,7 +60,7 @@ def archive():
 def index():
     page = query_post('').first()
     if page:
-        return redirect(url_for('read', pagename=page.name[:5]))
+        return redirect(url_for('read', pagename=page.url_name[:5]))
     else:
         return redirect(url_for('archive'))
 

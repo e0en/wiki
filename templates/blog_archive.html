@@ -17,7 +17,7 @@
         <ul id="page_list">
             {% for a in article_list %}
             <li><span class="name">
-                <a href="{{ url_for("read", pagename=a) }}">{{ a }}</a>
+                <a href="{{ url_for("read", pagename=a.url_name[5:]) }}">{{ a.name[5:] }}</a>
             </span></li>
             {% endfor %}
         </ol>

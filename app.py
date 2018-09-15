@@ -24,6 +24,20 @@ login_manager.login_view = 'login'
 
 app.url_map.strict_slashes = False
 
+URL_CHARS = ('abcdefghijklmnopqrstuvwxyz'
+             'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+             '1234567890$-_.+!*\'(),')
+
+
+def to_url_name(name):
+    result = ''
+    for c in name:
+        if c not in URL_CHARS:
+            result += '-'
+        else:
+            result += c
+    return result.strip().lower()
+
 
 @app.route('/robots.txt')
 def static_from_root():
@@ -71,6 +85,9 @@ def read(pagename):
     res = Article.query.filter(Article.name == pagename).first()
     is_logged_in = current_user.is_authenticated
 
+    if res is None:
+        res = Article.query.filter(Article.url_name == pagename).first()
+
     if res is not None and (is_logged_in or res.is_public):
         prev_page = Article.query\
             .filter(Article.name < pagename)\
@@ -102,6 +119,9 @@ def edit(pagename):
             article = Article(name=pagename, markdown='')
             article.time_edit = datetime.now()
 
+        if article is None or article.url_name is None:
+            article.url_name = to_url_name(pagename)
+
         t_edit = article.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
         body = render_template('Edit.html', article=article)
         resp = Response(body)
@@ -110,6 +130,7 @@ def edit(pagename):
 
 
 def process_edit(pagename, form, ip_addr):
+    url_name = form['url_name']
     content = form['content']
     now = datetime.now()
 
@@ -126,9 +147,14 @@ def process_edit(pagename, form, ip_addr):
         is_updated = article.content.strip() != content.strip()
     else:
         is_updated = True
+
+    if article.url_name is None or article.url_name.strip() != url_name:
+        is_updated = True
+
     is_updated |= is_public != was_public
 
     if is_new_page or is_updated:
+        article.url_name = url_name
         article.content = content
         article.markdown = content
         article.ip_address = ip_addr
@@ -146,6 +172,7 @@ def process_edit(pagename, form, ip_addr):
         else:
             h.type = 'mod'
             result_dict = {
+                'url_name': article.url_name,
                 'content': article.content,
                 'markdown': article.markdown,
                 'ip_address': article.ip_address,

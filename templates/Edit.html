@@ -17,18 +17,17 @@
 
 {% block subTitle %}Editing {{ article.name }}{% endblock %}
 {% block content %}
-
-{% if suggestion %}
-<p id="search_suggestion">Did you search for <em><a href="{{site_uri}}search?q={{suggestion}}">{{ suggestion }}</a></em>? </p>
-{% endif %}
-
     <form action="#" method="POST" id="edit">
         <div id="editor">
 	    <p>
 	        <label for="is_public">Public?</label>
 	        <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}  />
 	    </p>
-            <textarea id="content" name="content">{{ article.markdown }}</textarea>
+        <p>
+	        <label for="url_name">URL</label>
+            <input type="text" name="url_name" value="{{ article.url_name }}"  />
+        </p>
+            <textarea id="content" name="content" tabindex="0">{{ article.markdown }}</textarea>
             <div><span id="count">0</span> bytes</div>
             <input type="submit" value="Apply Changes" />
             <p><a href="{{ url_for("read", pagename=article.name) }}">Read This Article</a></p>

@@ -13,10 +13,23 @@
     border: 1px solid;
 }
 
+label {
+    font-weight: bold;
+}
+
 input[type=submit] {
     border-radius: 8px;
     padding: 8px;
     background: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    border: 1px solid;
+}
+
+input[type=text] {
+    width: 30em;
+    max-width: 50%;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
     border: 1px solid;
 }
