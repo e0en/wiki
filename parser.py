@@ -5,10 +5,16 @@ from mistune_contrib import highlight
 
 
 class MyRenderer(mistune.Renderer):
+    def __init__(self, *args, **kwargs):
+        mistune.Renderer.__init__(self, *args, **kwargs)
+        self.wiki_links = []
+
     def block_code(self, code, lang):
         return highlight.block_code(code, lang, False)
 
     def wiki_link(self, alt, link):
+        if not link.startswith('http'):
+            self.wiki_links += [link]
         return f'<a class="link_inside" href="{link}">{alt}</a>'
 
 
@@ -66,11 +72,17 @@ def preprocess_redirect(raw_text):
 
 
 class Parser(object):
+    def __init__(self):
+        self.renderer = MyRenderer()
+
     def parse_markdown(self, raw_text):
-        renderer = MyRenderer()
-        inline = MyLexer(renderer)
-        markdown = mistune.Markdown(renderer=renderer, inline=inline)
+        inline = MyLexer(self.renderer)
+        markdown = mistune.Markdown(renderer=self.renderer, inline=inline)
 
         processed = preprocess_redirect(raw_text)
 
         return markdown(processed)
+
+    @property
+    def wiki_links(self):
+        return self.renderer.wiki_links

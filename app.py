@@ -12,7 +12,7 @@ from bcrypt import checkpw
 from sqlalchemy.sql.expression import func
 
 from parser import Parser
-from models import Article, History, User, db_session
+from models import Article, History, User, Link, db_session
 from secret import SECRET_KEY
 
 
@@ -167,10 +167,19 @@ def process_edit(pagename, form, ip_addr):
         article.content = content
         article.markdown = content
         article.ip_address = ip_addr
-        article.content_html = Parser().parse_markdown(content)
+        parser = Parser()
+        article.content_html = parser.parse_markdown(content)
         article.time_edit = now
         article.links = ''
         article.is_public = 1 if is_public else 0
+
+        all_names = Article.query.with_entities(Article.name).all()
+        all_names = [x.name for x in all_names]
+        Link.query.filter(Link.from_name == pagename).delete()
+        for l in parser.wiki_links:
+            if l in all_names:
+                new_link = Link(from_name=pagename, to_name=l)
+                db_session.add(new_link)
 
         h = History(name=pagename, content=content, ip_address=ip_addr,
                     time=now)
