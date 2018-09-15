@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
 from datetime import date, datetime
 
-from flask import Flask, redirect, url_for, g, render_template, Response, request
+from flask import Flask, g, Response, request
+from flask import redirect, url_for, render_template
 from flask import send_from_directory
 from flask_login import LoginManager, login_required
 from flask_login import current_user
 from flask_login import login_user, logout_user
-from bcrypt import hashpw, checkpw
+from bcrypt import checkpw
 
 from parser import Parser
-import latex
 from models import Article, History, User, db_session
 from secret import SECRET_KEY
 
@@ -28,7 +27,7 @@ app.url_map.strict_slashes = False
 
 @app.route('/robots.txt')
 def static_from_root():
-    return send_from_directory(static_folder, request.path[1:])
+    return send_from_directory(app.static_folder, request.path[1:])
 
 
 @app.teardown_appcontext
@@ -237,13 +236,10 @@ def search():
 @app.route('/history_list/<pagename>')
 def history_list(pagename):
     # fetch history of the page of the given name
-    try:
-        hlist = History.query.\
-                filter(History.type != 'new').\
-                filter(History.name == pagename).\
-                order_by(History.id.desc()).all()
-    except:
-        hlist = []
+    hlist = History.query.\
+            filter(History.type != 'new').\
+            filter(History.name == pagename).\
+            order_by(History.id.desc()).all()
 
     if len(hlist) == 0:
         return redirect(url_for('read', pagename=pagename))
