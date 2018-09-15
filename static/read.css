@@ -162,6 +162,13 @@ blockquote cite:before {
     content: " - "; 
 }
 
+div.highlight {
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid;
+    border-radius: 8px;
+}
+
 @media only screen and (min-width: 768px) {
     body {
         padding: 1em;
