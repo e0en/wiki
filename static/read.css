@@ -171,6 +171,9 @@ div.highlight {
 }
 
 @media only screen and (min-width: 768px) {
+    html, input, textarea {
+        font-size: 16px;
+    }
     body {
         padding: 1em;
         max-width: 50em;
