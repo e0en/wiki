@@ -71,8 +71,8 @@ window.onload = function() {
 
     bind_all();
     search_input = document.getElementById("search_query");
-    search_input.onfocus = unbind_all();
-    search_input.onblur = bind_all();
+    search_input.onfocus = unbind_all;
+    search_input.onblur = bind_all;
 
     renderMathInElement(document.body, {'delimiters': [
       {left: "$$", right: "$$", display: true},
