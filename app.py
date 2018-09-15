@@ -53,7 +53,7 @@ def login():
         hashed = user.hashed_pw.encode('utf-8')
         input_pw = request.form['password'].encode('utf-8')
         if checkpw(input_pw, hashed):
-            login_user(user)
+            login_user(user, remember=True)
             next_url = request.args.get('next')
             return redirect(next_url or url_for('index'))
         else:
