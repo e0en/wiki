@@ -11,6 +11,7 @@ from flask_login import login_user, logout_user
 from bcrypt import checkpw
 from sqlalchemy.sql.expression import func
 
+from oembed import insert_oembeds
 from parser import Parser
 from models import Article, History, User, Link, db_session
 from secret import SECRET_KEY
@@ -92,6 +93,7 @@ def read(pagename):
     if res is not None and (is_logged_in or res.is_public):
         p = Parser()
         res.content_html = p.parse_markdown(res.markdown)
+        res.content_html = insert_oembeds(res.content_html)
 
         backlinks = Link.query.filter_by(to_name=pagename).all()
         backlinks = [l.from_name for l in backlinks]
