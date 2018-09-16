@@ -91,7 +91,7 @@ def read(pagename):
 
     if res is not None and (is_logged_in or res.is_public):
         p = Parser()
-        res.content_html = p.parse_markdown(res.content)
+        res.content_html = p.parse_markdown(res.markdown)
 
         backlinks = Link.query.filter_by(to_name=pagename).all()
         backlinks = [l.from_name for l in backlinks]
