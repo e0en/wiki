@@ -1,9 +1,5 @@
 {% extends 'Base.html' %}
 
-{% block metatags %}
-<meta name="articleuri" content="{{ article.name }}" />
-{% endblock %}
-
 {% block title %}{{ article_name }} - History #{{ article.id }}{% endblock %}
 
 {% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />

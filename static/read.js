@@ -59,16 +59,6 @@ var unbind_all = function() {
 };
 
 window.onload = function() {
-    var m = document.getElementsByTagName("meta");
-    var articleURI = '';
-    for(i=0; i < m.length; i++) {
-        if(m[i].name == 'articleuri') {
-            articleURI = m[i].content;
-            break;
-        }
-    }
-    content = document.getElementById("content");
-
     bind_all();
     search_input = document.getElementById("search_query");
     search_input.onfocus = unbind_all;

@@ -1,7 +1,6 @@
 {% extends 'Base.html' %}
 
 {% block metatags %}
-<meta name="articleuri" content="{{ article.name }}" />
 {% if redirect %}
 <meta http-equiv="Refresh" content="1; url={{ url_for("read", pagename="%s" % redirect) }}" />
 {% endif %}
