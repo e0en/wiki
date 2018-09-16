@@ -41,6 +41,13 @@ def to_url_name(name):
     return result.strip().lower()
 
 
+def get_pages():
+    if current_user.is_authenticated:
+        return Article.query
+    else:
+        return Article.query.filter(Article.is_public == 1)
+
+
 @app.route('/robots.txt')
 def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
@@ -90,7 +97,10 @@ def read(pagename):
     if res is None:
         res = Article.query.filter(Article.url_name == pagename).first()
 
-    if res is not None and (is_logged_in or res.is_public):
+    if res is not None:
+        if not res.is_public and not is_logged_in:
+            return app.login_manager.unauthorized()
+
         p = Parser()
         res.content_html = p.parse_markdown(res.markdown)
         res.content_html = insert_oembeds(res.content_html)
@@ -99,11 +109,10 @@ def read(pagename):
         backlinks = [l.from_name for l in backlinks]
         res.content_html += p.gen_backlink_html(backlinks)
 
-        prev_page = Article.query\
-            .filter(Article.name < pagename)\
+        prev_page = get_pages().filter(Article.name < pagename)\
             .order_by(Article.name.desc())\
             .first()
-        next_page = Article.query\
+        next_page = get_pages()\
             .filter(Article.name > pagename)\
             .order_by(Article.name)\
             .first()
@@ -120,9 +129,7 @@ def read(pagename):
 
 @app.route('/random')
 def random():
-    res = Article.query.\
-        order_by(func.random()).\
-        first()
+    res = get_pages().order_by(func.random()).first()
     return redirect(url_for('read', pagename=res.name))
 
 
@@ -225,6 +232,7 @@ def process_edit(pagename, form, ip_addr):
 
 
 @app.route('/recentchanges')
+@login_required
 def recentchanges():
     rows = History.query.order_by(History.time.desc()).all()
     h_list = []
@@ -261,7 +269,7 @@ def recentchanges():
 
 @app.route('/pagelist')
 def pagelist():
-    article_list = Article.query.\
+    article_list = get_pages().\
         with_entities(Article.name).\
         order_by(Article.name).all()
     return render_template('PageList.html', article_list=article_list)
@@ -271,7 +279,7 @@ def pagelist():
 def search():
     query = request.args.get('q', '')
 
-    matches = Article.query.\
+    matches = get_pages().\
         with_entities(Article.name).\
         filter(Article.name.like(f'%{query}%')).\
         all()
@@ -306,6 +314,7 @@ def history_list(pagename):
 
 
 @app.route('/history/<history_id>')
+@login_required
 def history(history_id):
     article = History.query.filter_by(id=history_id).first()
 
@@ -335,6 +344,7 @@ def delete(pagename):
 
 
 @app.route('/raw/<pagename>')
+@login_required
 def raw(pagename):
     res = Article.query.filter(Article.name == pagename).first()
     if res is not None:
