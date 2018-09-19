@@ -15,7 +15,7 @@
         <h1>{{ article.name[5:] }}</h1>
         <p>{{ article.time_create }}</p>
         <div id="content" class="content_read">
-    {{ article.content_html|safe }}
+    {{ article.html|safe }}
         </div>
     </div>
 </body>

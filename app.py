@@ -101,14 +101,6 @@ def read(pagename):
         if not res.is_public and not is_logged_in:
             return app.login_manager.unauthorized()
 
-        p = Parser()
-        res.content_html = p.parse_markdown(res.markdown)
-        res.content_html = insert_oembeds(res.content_html)
-
-        backlinks = Link.query.filter_by(to_name=pagename).all()
-        backlinks = [l.from_name for l in backlinks]
-        res.content_html += p.gen_backlink_html(backlinks)
-
         prev_page = get_pages().filter(Article.name < pagename)\
             .order_by(Article.name.desc())\
             .first()
@@ -142,7 +134,7 @@ def edit(pagename):
     else:
         article = Article.query.filter_by(name=pagename).first()
         if article is None:
-            article = Article(name=pagename, markdown='')
+            article = Article(name=pagename, content='')
             article.time_edit = datetime.now()
 
         if article is None or article.url_name is None:
@@ -183,10 +175,16 @@ def process_edit(pagename, form, ip_addr):
     if is_new_page or is_updated:
         article.url_name = url_name
         article.content = content
-        article.markdown = content
         article.ip_address = ip_addr
+
         parser = Parser()
-        article.content_html = parser.parse_markdown(content)
+        article.html = parser.parse_markdown(content)
+        article.html = insert_oembeds(article.html)
+
+        backlinks = Link.query.filter_by(to_name=pagename).all()
+        backlinks = [l.from_name for l in backlinks]
+        article.html += parser.gen_backlink_html(backlinks)
+
         article.time_edit = now
         article.links = ''
         article.is_public = 1 if is_public else 0
@@ -216,10 +214,7 @@ def process_edit(pagename, form, ip_addr):
             result_dict = {
                 'url_name': article.url_name,
                 'content': article.content,
-                'markdown': article.markdown,
-                'ip_address': article.ip_address,
-                'content_html': article.content_html,
-                'links': article.links,
+                'html': article.html,
                 'time_edit': article.time_edit,
                 'is_public': article.is_public,
             }
@@ -322,7 +317,7 @@ def history(history_id):
 
     if article is not None:
         parser = Parser()
-        article.content_html = parser.parse_markdown(article.content)
+        article.html = parser.parse_markdown(article.content)
         return render_template('History.html', article=article)
     else:
         return redirect(url_for('read', pagename=article.name))
@@ -350,7 +345,7 @@ def delete(pagename):
 def raw(pagename):
     res = Article.query.filter(Article.name == pagename).first()
     if res is not None:
-        return Response(res.markdown, mimetype='text/plain')
+        return Response(res.content, mimetype='text/plain')
     else:
         return redirect(url_for('search', q=pagename))
 
