@@ -122,6 +122,7 @@ def read(pagename):
         t_edit = res.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
         resp = Response(body)
         resp.headers['Last-Modified'] = t_edit
+        resp.headers['Cache-Control'] = 'no-cache'
         return resp
     else:
         return redirect(url_for('search', q=pagename))
@@ -151,6 +152,7 @@ def edit(pagename):
         body = render_template('Edit.html', article=article)
         resp = Response(body)
         resp.headers['Last-Modified'] = t_edit
+        resp.headers['Cache-Control'] = 'no-cache'
         return resp
 
 
