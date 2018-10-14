@@ -3,7 +3,6 @@ mistune
 mistune-contrib
 Pygments
 SQLAlchemy
-gunicorn
 flask-login
 bcrypt
 requests
