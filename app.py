@@ -48,6 +48,13 @@ def get_pages():
         return Article.query.filter(Article.is_public == 1)
 
 
+def get_user_ip():
+    if 'X-Forwarded-For' in request.headers:
+        return request.headers['X-Forwarded-For']
+    else:
+        return request.remote_addr
+
+
 @app.route('/robots.txt')
 def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
@@ -130,7 +137,8 @@ def random():
 @login_required
 def edit(pagename):
     if request.method == 'POST':
-        return process_edit(pagename, request.form, request.remote_addr)
+        ip_address = get_user_ip()
+        return process_edit(pagename, request.form, ip_address)
     else:
         article = Article.query.filter_by(name=pagename).first()
         if article is None:
@@ -330,7 +338,7 @@ def delete(pagename):
     if article is not None:
         h = History(name=pagename,
                     content=article.content,
-                    ip_address=request.remote_addr,
+                    ip_address=get_user_ip(),
                     time=datetime.now(),
                     type='del')
         db_session.add(h)
