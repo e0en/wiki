@@ -12,6 +12,10 @@ body {
     background: white;
 }
 
+img {
+    max-width: 100%;
+}
+
 .section_anchor {
     color: #c00;
 }
