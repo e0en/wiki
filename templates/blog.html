@@ -1,10 +1,19 @@
 <!DOCTYPE HTML>
-<html lang="ko">
+<html lang="ko" prefix="og: http://ogp.me/ns#">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{{ article.name[5:] }}</title>
+
+    <meta property="og:title" content="{{ article.name[5:] }}" />
+    <meta property="og:description" content="{{ article.content[:100] }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:published_time" content="{{ article.time_create }}" />
+    <meta property="og:author" content="Yoonseop Kang" />
+    <meta property="og:site_name" content="blog.2501.sh" />
+    <meta property="og:url" content="https://blog.2501.sh/" />
+    <meta property="og:image" content="https://2501.sh/profile.png" />
 
     <link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
     <link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
