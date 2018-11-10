@@ -34,7 +34,7 @@ def close_connection(exception):
         db.close()
 
 
-@app.route('/<pagename>')
+@app.route('/read/<pagename>')
 def read(pagename):
     res = query_post(pagename).first()
 
@@ -60,10 +60,12 @@ def archive():
 def index():
     page = query_post('').first()
     if page:
-        return redirect(url_for('read', pagename=page.url_name[:5]))
+        print(page.url_name)
+        print(url_for('read', pagename=page.url_name[5:]))
+        return redirect(url_for('read', pagename=page.url_name[5:]))
     else:
         return redirect(url_for('archive'))
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
