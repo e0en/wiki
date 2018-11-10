@@ -20,7 +20,7 @@
                 <a href="{{ url_for("read", pagename=a.url_name[5:]) }}">{{ a.name[5:] }}</a>
             </span></li>
             {% endfor %}
-        </ol>
+        </ul>
         {% else %}
         <p>No postings yet.</p>
         {% endif %}
