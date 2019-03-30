@@ -4,9 +4,15 @@
 
 {% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
 <link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
+<link rel="stylesheet" href="{{ url_for("static", filename="pygments-github.css") }}" media="screen" />
 {% endblock %}
 
-{% block script %}<script src="{{ url_for("static", filename="view.js") }}"></script>{% endblock%}
+{% block script %}
+<link rel="stylesheet" href="{{ url_for("static", filename="katex/katex.min.css") }}" />
+<script defer src="{{ url_for("static", filename="katex/katex.min.js") }}"></script>
+<script defer src="{{ url_for("static", filename="katex/contrib/auto-render.min.js") }}"></script>
+<script src="{{ url_for("static", filename="read.js") }}"></script>
+{% endblock%}
 
 
 {% block subTitle %}{{ article.name }} <span class="history_id"> - History {{ article.id }}</span>{% endblock %}
