@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% block metatags %}<meta name="articleuri" content="{{ escaped_article_name }}" />{% endblock %}
     <title>{% block title %} Page title {% endblock %}</title>
-{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for("static", filename="bulma.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+{% endblock %}
 {% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>{% endblock %}
     </head>
     <body>
