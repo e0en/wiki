@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-﻿html, input, textarea {
+html, input, textarea {
     font-family: sans-serif;
     font-size: 16px;
     text-size-adjust: 100%;
@@ -7,7 +6,6 @@
 
 body {
     margin: 0 auto;
-    padding: 1em;
     max-width: 100%;
     line-height: 1.5;
     background: white;
