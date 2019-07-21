@@ -15,6 +15,7 @@
 
 {% block subTitle %}List of Pages{% endblock %}
 {% block content %}
+<div class="content">
 There are total {{ article_list|length }} pages.
 <ol id="page_list">
     {% for a in article_list %}
@@ -23,4 +24,5 @@ There are total {{ article_list|length }} pages.
     </li>
     {% endfor %}
 </ol>
+</div>
 {% endblock %}
