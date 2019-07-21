@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿html, input, textarea {
     font-family: sans-serif;
     font-size: 16px;
@@ -20,16 +21,6 @@ img {
     color: #c00;
 }
 
-#search_query {
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px;
-
-    width: 100%;
-    margin: 8px 0;
-}
-
 #prev_next a {
     color: #999;
 }
@@ -46,12 +37,11 @@ img {
     content: ' >';
 }
 
-
-.content_read a {
+.content a {
     color: green;
 }
 
-.content_read a.link_inside {
+.content a.link_inside {
     color: blue;
 }
 
@@ -127,19 +117,4 @@ div.highlight {
     border: 1px solid;
     border-radius: 8px;
     overflow: hidden;
-}
-
-@media only screen and (min-width: 768px) {
-    body {
-        padding: 1em;
-        max-width: 50em;
-    }
-
-    #search_query {
-        width: 10em;
-    }
-
-    #nav li {
-        padding: 0 1em 0 0;
-    }
 }

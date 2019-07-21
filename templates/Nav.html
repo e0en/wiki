@@ -1,13 +1,27 @@
 <header>
 <nav class="navbar">
+<div class="navbar-brand">
+
+<a class="navbar-item" href="{{ url_for("read", pagename="MainPage") }}">MainPage</a>
+
+<a role="button" class="navbar-burger">
+<span aria-hidden="true"></span>
+<span aria-hidden="true"></span>
+<span aria-hidden="true"></span>
+</a>
+</div>
 <div id="nav" class="navbar-menu">
-    <a class="navbar-item" href="{{ url_for("read", pagename="MainPage") }}">MainPage</a>
+<div class="navbar-start">
     <a class="navbar-item" href="{{ url_for("recentchanges") }}">RecentChanges</a>
     <a class="navbar-item" href="{{ url_for("pagelist") }}">PageList</a>
     <a class="navbar-item" href="{{ url_for("jrnl") }}">Journal</a>
 </div>
-<form class="navbar-end" id="search" action="{{ url_for("search") }}">
-<input type="text" id="search_query" name="q" placeholder="Search" />
+<form class="navbar-end field" id="search" action="{{ url_for("search") }}">
+<div class="navbar-item control">
+<input type="text" id="search_query" name="q" class="input" placeholder="Search" />
+</div>
 </form>
+</div>
+
 </nav>
 </header>

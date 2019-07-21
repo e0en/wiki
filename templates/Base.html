@@ -12,11 +12,11 @@
 {% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>{% endblock %}
     </head>
     <body>
-        <div id="wrapper">
     {% include 'Nav.html' %}
+        <section id="wrapper" class="section">
             <h1 class="title">{% block subTitle %}Sub title{% endblock %}</h1>
     {% block content %}
     {% endblock %}
-        </div>
+        </section>
     </body> 
 </html>

@@ -1,17 +1,5 @@
-h2 {
-    float: left;
-    clear: both;
-    width: 100%;
-}
-
 .page_list {
-    margin: 0;
-    padding: 0;
     font-family: monospace;
-}
-
-.page_list li {
-    list-style-type: none;
 }
 
 .page_list .time {

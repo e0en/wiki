@@ -16,8 +16,9 @@
 
 {% block subTitle %}RecentChanges{% endblock %}
 {% block content %}
+<div class="content">
 {% for h in history_list %}
-<h2>{{ h.date }}</h2>
+<h2 class="subtitle">{{ h.date }}</h2>
 <ul class="page_list">
 {% for d in h.changes %}
         <li>
@@ -29,4 +30,5 @@
 {% endfor %}
 </ul>
 {% endfor %}
+</div>
 {% endblock %}
