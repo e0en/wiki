@@ -1,18 +1,5 @@
-#search_suggestion {
-    background: #eee;
-    padding: 1em;
-    font-size: 85%;
-}
-
 #search_suggestion a {
     font-weight: bold;
-}
-
-#exact_match {
-    margin: 1em 0;
-    padding: 16px;
-    border: 1px solid #eee;
-    border-radius: 8px;
 }
 
 #exact_match a {
