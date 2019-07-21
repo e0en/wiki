@@ -11,12 +11,12 @@
 
 {% block subTitle %}{{ article.name }} <span class="history_id"> - History {{ article.id }}</span>{% endblock %}
 {% block content %}
-<div id="content" class="content_read">
-{{ article.content_html|safe }}
-
-<p id="controls">
-<a href="{{ url_for("history_list", pagename=article.name) }}">Other Versions</a>
-<a href="{{ url_for("read", pagename=article.name) }}">Show current version</a>
-</p>
+<div id="content" class="content">
+{{ article.html|safe }}
 </div>
+
+<p id="controls" class="content">
+<a class="button" href="{{ url_for("history_list", pagename=article.name) }}">Other Versions</a>
+<a class="button" href="{{ url_for("read", pagename=article.name) }}">Show current version</a>
+</p>
 {% endblock %}
