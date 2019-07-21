@@ -36,21 +36,22 @@
 {{ article.html|safe }}
 </div>
 
-<nav id="prev_next">
+{% if current_user.is_authenticated %}
+<p id="controls" class="content">
+<a class="button" id="control_edit" href="{{ url_for("edit", pagename=article.name) }}">Edit</a>
+<a class="button" href="{{ url_for("history_list", pagename=article.name) }}">History</a>
+<a class="button" href="{{ url_for("raw", pagename=article.name) }}">Raw</a>
+<a class="button" href="{{ url_for("logout") }}">Logout</a>
+</p>
+{% endif %}
+
+<nav id="prev_next" class="content">
 {% if prev_page %}
-<a id="nav_prev_page" href="{{ url_for("read", pagename=prev_page.name) }}">{{prev_page.name}}</a>
+<a id="nav_prev_page" class="is-pulled-left" href="{{ url_for("read", pagename=prev_page.name) }}">{{prev_page.name}}</a>
 {% endif %}
 {% if next_page %}
-<a id="nav_next_page" href="{{ url_for("read", pagename=next_page.name) }}">{{next_page.name}}</a>
+<a id="nav_next_page" class="is-pulled-right" href="{{ url_for("read", pagename=next_page.name) }}">{{next_page.name}}</a>
 {% endif %}
 </nav>
 
-{% if current_user.is_authenticated %}
-<p id="controls">
-<a id="control_edit" href="{{ url_for("edit", pagename=article.name) }}">Edit</a>
-<a href="{{ url_for("history_list", pagename=article.name) }}">History</a>
-<a href="{{ url_for("raw", pagename=article.name) }}">Raw</a>
-<a href="{{ url_for("logout") }}">Logout</a>
-</p>
-{% endif %}
 {% endblock %}

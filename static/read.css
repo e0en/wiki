@@ -21,27 +21,11 @@ img {
     color: #c00;
 }
 
-#prev_next a {
-    color: #999;
-}
-
-#nav_prev_page::before {
-    content: '< ';
-}
-
-#nav_prev_page {
-    margin-right: 1em;
-}
-
-#nav_next_page::after {
-    content: ' >';
-}
-
-.content a {
+#content a {
     color: green;
 }
 
-.content a.link_inside {
+#content a.link_inside {
     color: blue;
 }
 
@@ -118,3 +102,13 @@ div.highlight {
     border-radius: 8px;
     overflow: hidden;
 }
+
+
+#nav_prev_page::before {
+    content: '← ';
+}
+
+#nav_next_page::after {
+    content: ' →';
+}
+

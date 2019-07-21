@@ -12,9 +12,9 @@
 {% block content %}
 <form action="#" method="POST" id="edit" class="content">
     <div class="field">
-	<label for="is_public" class="label">Public?</label>
 	<div class="control">
-	<input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}  />
+	<input type="checkbox" name="is_public" class="checkbox" {% if article.is_public %}checked{% endif %}  />
+	<label for="is_public">Public?</label>
 	</div>
     </div>
 <div class="field">
