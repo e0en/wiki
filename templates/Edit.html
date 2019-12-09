@@ -2,7 +2,9 @@
 
 {% block title %}{{ article.name }} - edit{% endblock %}
 
-{% block css %}<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+{% block css %}
+<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="edit.css") }}" media="screen" />
 {% endblock %}
 
 {% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>
@@ -11,24 +13,24 @@
 {% block subTitle %}Editing {{ article.name }}{% endblock %}
 {% block content %}
 <form action="#" method="POST" id="edit" class="content">
-    <div class="field">
-	<div class="control">
-	<input type="checkbox" name="is_public" class="checkbox" {% if article.is_public %}checked{% endif %}  />
-	<label for="is_public">Public?</label>
-	</div>
+    <div class="field" id="is_public_field">
+        <div class="control">
+            <input type="checkbox" name="is_public" class="checkbox" {% if article.is_public %}checked{% endif %}  />
+            <label for="is_public">Public?</label>
+        </div>
     </div>
-<div class="field">
+<div class="field" id="url_field">
     <label for="url_name" class="label">URL</label>
     <div class="control">
     <input type="text" name="url_name" class="input" value="{{ article.url_name }}"  />
     </div>
 </div>
-<div class="field">
+<div class="field" id="content_field">
     <label for="content" class="label">Content</label>
     <div class="control">
     <textarea id="content" name="content" class="textarea" tabindex="0">{{ article.content }}</textarea>
     </div>
-    <div class="control"><span id="count">0</span> bytes</div>
+    <div class="control" id="count_control"><span id="count">0</span> bytes</div>
 </div>
 <div class="field">
     <div class="control">

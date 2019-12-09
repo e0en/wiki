@@ -15,11 +15,6 @@ img {
     max-width: 100%;
 }
 
-.control .textarea {
-    height: 100%;
-    min-height: 20em;
-}
-
 .section_anchor {
     color: #c00;
 }

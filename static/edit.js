@@ -1,14 +1,19 @@
 window.onload = function() {
-  var content = document.getElementById("content");
-  var count = document.getElementById("count");
+  const content = document.getElementById('content');
+  var count = document.getElementById('count');
 
-  var display_char_count = function() {
-    var n_char = content.value.length;
-    count.innerHTML = String(n_char);
+  function update_content_field() {
+    const n_char = content.value.length
+    count.innerHTML = String(n_char)
+    content.style.height = ''
+    const height = content.scrollHeight;
+    content.style.height = height + 'px';
+    content.style.maxHeight = height + 'px';
+
   };
-  display_char_count();
+  update_content_field();
 
-  content.addEventListener("keyup", event => {
-    display_char_count();
+  content.addEventListener('input', event => {
+    update_content_field();
   });
 };
