@@ -10,7 +10,7 @@
 {% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>
 {% endblock%}
 
-{% block subTitle %}Editing {{ article.name }}{% endblock %}
+{% block subTitle %}{{ article.name }}{% endblock %}
 {% block content %}
 <form action="#" method="POST" id="edit" class="content">
     <div class="field" id="is_public_field">
