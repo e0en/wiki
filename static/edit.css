@@ -4,19 +4,56 @@
 }
 
 @media screen and (max-width: 768px) {
-    nav, .field label, #is_public_field, #url_field, #count_control {
+    nav, .field label, footer, #is_public_field, #url_field, #count_control {
         display: none;
     }
 
-    #content {
+    body {
         margin: 0;
-        border: 0;
-        outline: none;
-        border-radius: 0;
-        box-shadow: 0;
+        padding: 0;
+        height: 100vh;
+    }
+
+    h1.title {
+        margin: 16px;
+        padding: 0;
+        height: 32px;
     }
 
     #wrapper {
+        height: 100%;
+        margin: 0;
         padding: 0;
+    }
+
+    #edit {
+        height: calc(100% - 32px - 32px);
+    }
+
+    #buttons {
+        margin: 0;
+        padding: 16px;
+        height: 32px;
+    }
+
+    #content_field {
+        margin: 0;
+        height: calc(100% - 32px - 32px);
+    }
+
+    #content_field div {
+        margin: 0;
+        height: 100%;
+    }
+
+    #content {
+        height: 100%;
+        min-height: 1em;
+        margin: 0;
+        outline: none;
+        padding-left: 16px;
+        border: 0;
+        border-radius: 0;
+        box-shadow: 0;
     }
 }
