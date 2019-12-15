@@ -15,6 +15,7 @@ from oembed import insert_oembeds
 from parser import Parser
 from models import Article, History, User, Link, db_session
 from secret import SECRET_KEY
+from utils import to_url_name
 
 
 login_manager = LoginManager()
@@ -25,20 +26,6 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 app.url_map.strict_slashes = False
-
-URL_CHARS = ('abcdefghijklmnopqrstuvwxyz'
-             'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-             '1234567890$-_.+!*\'(),')
-
-
-def to_url_name(name):
-    result = ''
-    for c in name:
-        if c not in URL_CHARS:
-            result += '-'
-        else:
-            result += c
-    return result.strip().lower()
 
 
 def get_pages():
@@ -103,28 +90,26 @@ def read(pagename):
 
     if res is None:
         res = Article.query.filter(Article.url_name == pagename).first()
-
-    if res is not None:
-        if not res.is_public and not is_logged_in:
-            return app.login_manager.unauthorized()
-
-        prev_page = get_pages().filter(Article.name < pagename)\
-            .order_by(Article.name.desc())\
-            .first()
-        next_page = get_pages()\
-            .filter(Article.name > pagename)\
-            .order_by(Article.name)\
-            .first()
-        body = render_template('Read.html', article=res,
-                               prev_page=prev_page,
-                               next_page=next_page)
-        t_edit = res.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
-        resp = Response(body)
-        resp.headers['Last-Modified'] = t_edit
-        resp.headers['Cache-Control'] = 'no-cache'
-        return resp
-    else:
+    if res is None:
         return redirect(url_for('search', q=pagename))
+    if not res.is_public and not is_logged_in:
+        return app.login_manager.unauthorized()
+
+    prev_page = get_pages().filter(Article.name < pagename)\
+        .order_by(Article.name.desc())\
+        .first()
+    next_page = get_pages()\
+        .filter(Article.name > pagename)\
+        .order_by(Article.name)\
+        .first()
+    body = render_template('Read.html', article=res,
+                           prev_page=prev_page,
+                           next_page=next_page)
+    t_edit = res.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
+    resp = Response(body)
+    resp.headers['Last-Modified'] = t_edit
+    resp.headers['Cache-Control'] = 'no-cache'
+    return resp
 
 
 @app.route('/random')
@@ -144,8 +129,7 @@ def edit(pagename):
         if article is None:
             article = Article(name=pagename, content='')
             article.time_edit = datetime.now()
-
-        if article is None or article.url_name is None:
+        if article.url_name is None:
             article.url_name = to_url_name(pagename)
 
         t_edit = article.time_edit.strftime('%a, %d %b %Y %H:%M:%S GMT')
@@ -158,7 +142,8 @@ def edit(pagename):
 
 def process_edit(pagename, form, ip_addr):
     url_name = form['url_name']
-    content = form['content']
+    content = form['content'].strip()
+    is_public = form.get('is_public', False)
     now = datetime.now()
 
     article = Article.query.filter(Article.name == pagename).first()
@@ -166,80 +151,59 @@ def process_edit(pagename, form, ip_addr):
 
     if is_new_page:
         article = Article(name=pagename, time_create=now)
+    is_updated = is_article_updated(article, form)
+    if not (is_new_page or is_updated):
+        return redirect(url_for('read', pagename=pagename))
 
-    is_public = form.get('is_public') is not None
-    was_public = None if is_new_page else article.is_public == 1
+    article.url_name = url_name
+    article.content = content
+    article.ip_address = ip_addr
 
-    if article.content is not None:
-        is_updated = article.content.strip() != content.strip()
-    else:
-        is_updated = True
+    article.html, links = parse_content(pagename, content)
+    article.time_edit = now
+    article.links = ''
+    article.is_public = 1 if is_public else 0
 
-    if article.url_name is None or article.url_name.strip() != url_name:
-        is_updated = True
+    all_names = Article.query.with_entities(Article.name).all()
+    all_names = [x.name for x in all_names]
+    existing_links = Link.query.filter_by(from_name=pagename).all()
+    for l in existing_links:
+        db_session.delete(l)
+    db_session.commit()
 
-    is_updated |= is_public != was_public
+    added_names = set()
+    for l in links:
+        if l in all_names and l not in added_names:
+            new_link = Link(from_name=pagename, to_name=l)
+            added_names.add(l)
+            db_session.add(new_link)
 
-    if is_new_page or is_updated:
-        article.url_name = url_name
-        article.content = content
-        article.ip_address = ip_addr
-
-        parser = Parser()
-        article.html = parse_content(pagename, content)
-
-        article.time_edit = now
-        article.links = ''
-        article.is_public = 1 if is_public else 0
-
-        all_names = Article.query.with_entities(Article.name).all()
-        all_names = [x.name for x in all_names]
-        existing_links = Link.query.filter_by(from_name=pagename).all()
-        for l in existing_links:
-            db_session.delete(l)
-        db_session.commit()
-
-        added_names = set()
-        for l in parser.wiki_links:
-            if l in all_names and l not in added_names:
-                new_link = Link(from_name=pagename, to_name=l)
-                added_names.add(l)
-                db_session.add(new_link)
-
-        h = History(name=pagename, content=content, ip_address=ip_addr,
-                    time=now)
-
-        if is_new_page:
-            h.type = 'new'
-            db_session.add(article)
-        else:
-            h.type = 'mod'
-            result_dict = {
-                'url_name': article.url_name,
-                'content': article.content,
-                'html': article.html,
-                'time_edit': article.time_edit,
-                'is_public': article.is_public,
-            }
-            db_session.query(Article).\
-                filter_by(name=pagename).\
-                update(result_dict)
-
-        db_session.add(h)
-        db_session.commit()
-
+    add_history(article, is_new_page)
     return redirect(url_for('read', pagename=pagename))
 
 
-def parse_content(pagename, content):
-    parser = Parser()
-    html = parser.parse_markdown(content)
-    html = insert_oembeds(html)
+def add_history(article, is_new_page):
+    pagename = article.name
+    content = article.content
+    ip_addr = article.ip_address
+    now = datetime.now()
+    h = History(name=pagename, content=content, ip_address=ip_addr, time=now)
+    if is_new_page:
+        h.type = 'new'
+        db_session.add(article)
+    else:
+        h.type = 'mod'
+        result_dict = {
+            'url_name': article.url_name,
+            'content': article.content,
+            'html': article.html,
+            'time_edit': article.time_edit,
+            'is_public': article.is_public,
+        }
+        db_session.query(Article).filter_by(name=pagename).update(result_dict)
+    db_session.add(h)
+    db_session.commit()
 
-    backlinks = Link.query.filter_by(to_name=pagename).all()
-    backlinks = [l.from_name for l in backlinks]
-    html += parser.gen_backlink_html(backlinks)
-    return html
 
 
 @app.route('/preview/<pagename>', methods=['POST', 'GET'])
@@ -338,10 +302,8 @@ def history_list(pagename):
 @login_required
 def history(history_id):
     article = History.query.filter_by(id=history_id).first()
-
     if article is not None:
-        parser = Parser()
-        article.html = parser.parse_markdown(article.content)
+        article.html, _ = parse_content(article.name, article.content)
         return render_template('History.html', article=article)
     else:
         return redirect(url_for('read', pagename=article.name))
@@ -384,6 +346,34 @@ def jrnl():
 @app.route('/')
 def index():
     return redirect(url_for('read', pagename='MainPage'))
+
+
+def is_article_updated(article, form):
+    url_name = form['url_name']
+    content = form['content']
+
+    is_public = form.get('is_public') is not None
+    was_public = article.is_public == 1
+
+    if article.content is not None:
+        is_updated = article.content.strip() != content.strip()
+    else:
+        is_updated = True
+    if article.url_name is None or article.url_name.strip() != url_name:
+        is_updated = True
+
+    return is_updated or (is_public != was_public)
+
+
+def parse_content(pagename, content):
+    parser = Parser()
+    html = parser.parse_markdown(content)
+    html = insert_oembeds(html)
+
+    backlinks = Link.query.filter_by(to_name=pagename).all()
+    backlinks = [l.from_name for l in backlinks]
+    html += parser.gen_backlink_html(backlinks)
+    return html, parser.wiki_links
 
 
 if __name__ == '__main__':
