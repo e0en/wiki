@@ -35,6 +35,7 @@
 <div class="field" id="buttons">
     <div class="control">
         <input type="submit" class="button is-primary" value="Apply Changes" />
+        <a href="{{ url_for("preview", pagename=article.name) }}" class="button" id="preview-button">Preview</a>
     </div>
 </div>
 </form>

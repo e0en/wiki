@@ -1,0 +1,29 @@
+{% extends 'Base.html' %}
+
+{% block title %}{{ pagename }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
+<link rel="stylesheet" href="{{ url_for("static", filename="preview.css") }}" media="screen" />
+<link rel="stylesheet" href="{{ url_for("static", filename="pygments-github.css") }}" media="screen" />
+{% endblock %}
+
+{% block script %}
+<link rel="stylesheet" href="{{ url_for("static", filename="katex/katex.min.css") }}" />
+<script defer src="{{ url_for("static", filename="katex/katex.min.js") }}"></script>
+<script defer src="{{ url_for("static", filename="katex/contrib/auto-render.min.js") }}" onload="renderMathInElement(document.body);"></script>
+<script src="{{ url_for("static", filename="preview.js") }}"></script>
+{% endblock%}
+
+
+{% block subTitle %}{{ pagename }}{% endblock %}
+{% block content %}
+
+<div id="content" class="content">
+{{ content|safe }}
+</div>
+
+<button class="button" id="back-button">Back</button>
+
+{% endblock %}

@@ -186,12 +186,7 @@ def process_edit(pagename, form, ip_addr):
         article.ip_address = ip_addr
 
         parser = Parser()
-        article.html = parser.parse_markdown(content)
-        article.html = insert_oembeds(article.html)
-
-        backlinks = Link.query.filter_by(to_name=pagename).all()
-        backlinks = [l.from_name for l in backlinks]
-        article.html += parser.gen_backlink_html(backlinks)
+        article.html = parse_content(pagename, content)
 
         article.time_edit = now
         article.links = ''
@@ -234,6 +229,27 @@ def process_edit(pagename, form, ip_addr):
         db_session.commit()
 
     return redirect(url_for('read', pagename=pagename))
+
+
+def parse_content(pagename, content):
+    parser = Parser()
+    html = parser.parse_markdown(content)
+    html = insert_oembeds(html)
+
+    backlinks = Link.query.filter_by(to_name=pagename).all()
+    backlinks = [l.from_name for l in backlinks]
+    html += parser.gen_backlink_html(backlinks)
+    return html
+
+
+@app.route('/preview/<pagename>', methods=['POST', 'GET'])
+@login_required
+def preview(pagename):
+    content = request.form['content']
+    html, _ = parse_content(pagename, content)
+    body = render_template('Preview.html', pagename=pagename, content=html)
+    resp = Response(body)
+    return resp
 
 
 @app.route('/recentchanges')
