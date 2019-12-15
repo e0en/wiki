@@ -9,6 +9,7 @@
     }
 
     body {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
         height: 100vh;
@@ -21,24 +22,30 @@
     }
 
     #wrapper {
+        border: 1px solid white;
         height: 100%;
         margin: 0;
         padding: 0;
     }
 
     #edit {
-        height: calc(100% - 32px - 32px);
+        height: calc(100% - 72px);
     }
 
     #buttons {
         margin: 0;
         padding: 16px;
+        height: 64px;
+    }
+
+    #buttons .button {
         height: 32px;
+        padding: 0 8px;
     }
 
     #content_field {
         margin: 0;
-        height: calc(100% - 32px - 32px);
+        height: calc(100% - 64px);
     }
 
     #content_field div {
@@ -50,10 +57,11 @@
         height: 100%;
         min-height: 1em;
         margin: 0;
-        outline: none;
         padding-left: 16px;
+        overflow: auto;
+        resize: none;
         border: 0;
         border-radius: 0;
-        box-shadow: 0;
+        box-shadow: none;
     }
 }
