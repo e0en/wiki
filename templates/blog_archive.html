@@ -6,25 +6,32 @@
 
     <title>Archive</title>
 
-    <link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="bulma.min.css") }}" media="screen" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="blog.css") }}" media="screen" />
     <link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
     <link rel="stylesheet" href="{{ url_for("static", filename="pygments-github.css") }}" media="screen" />
 </head>
 <body>
-    <div id="wrapper">
+    <div id="wrapper" class="section content">
         <h1>Archive</h1>
         {% if article_list %}
         <ul id="page_list">
             {% for a in article_list %}
-            <li><span class="name">
-                <a href="{{ url_for("read", pagename=a.url_name[5:]) }}">{{ a.name[5:] }}</a>
-            </span></li>
+            <li>
+                <span class="tag post-time">
+                    {{ a.time_create.strftime('%Y-%m-%d %H:%M') }}
+                </span>
+                <span class="name">
+                    <a href="{{ url_for("read", pagename=a.url_name[5:]) }}">{{ a.name[5:] }}</a>
+                </span>
+            </li>
             {% endfor %}
         </ul>
         {% else %}
         <p>No postings yet.</p>
         {% endif %}
     </div>
+    {% include 'footer.html' %}
 </body>
 </html>
 

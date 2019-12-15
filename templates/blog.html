@@ -13,17 +13,23 @@
     <meta property="og:url" content="https://blog.2501.sh{{ url_for('read', pagename=article.url_name[5:]) }}" />
     <meta property="og:image" content="https://2501.sh/profile.png" />
 
-    <link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="bulma.min.css") }}" media="screen" />
+    <link rel="stylesheet" href="{{ url_for("static", filename="blog.css") }}" media="screen" />
     <link rel="stylesheet" href="{{ url_for("static", filename="print.css") }}" media="print" />
     <link rel="stylesheet" href="{{ url_for("static", filename="pygments-github.css") }}" media="screen" />
 </head>
 <body>
-    <div id="wrapper">
-        <h1>{{ article.name[5:] }}</h1>
-        <p>{{ article.time_create }}</p>
-        <div id="content" class="content_read">
-    {{ article.html|safe }}
+    <div id="wrapper" class="section">
+        <h1 class="title">{{ article.name[5:] }}</h1>
+        <div class="content">
+            <span class="tag post-time">
+                {{ article.time_create.strftime('%Y-%m-%d %H:%M') }}
+            </span>
+        </div>
+        <div id="content" class="content_read content">
+            {{article.html|safe}}
         </div>
     </div>
+    {% include 'footer.html' %}
 </body>
 </html>

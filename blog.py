@@ -58,13 +58,7 @@ def archive():
 
 @app.route('/')
 def index():
-    page = query_post('').first()
-    if page:
-        print(page.url_name)
-        print(url_for('read', pagename=page.url_name[5:]))
-        return redirect(url_for('read', pagename=page.url_name[5:]))
-    else:
-        return redirect(url_for('archive'))
+    return redirect(url_for('archive'))
 
 
 if __name__ == '__main__':
