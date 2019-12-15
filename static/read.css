@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Nanum+Gothic+Coding:400,700');
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,700');
+
 html, input, textarea {
-    font-family: sans-serif;
     font-size: 16px;
     text-size-adjust: 100%;
 }
@@ -9,10 +11,15 @@ body {
     max-width: 100%;
     line-height: 1.5;
     background: white;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 img {
     max-width: 100%;
+}
+
+section {
+    padding: 1rem;
 }
 
 .section_anchor {
@@ -20,11 +27,14 @@ img {
 }
 
 #content a {
-    color: green;
+    color: #096;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
 }
 
 #content a.link_inside {
-    color: blue;
+    color: #06f;
 }
 
 .link_inside_nonexist {
@@ -33,7 +43,7 @@ img {
 
 .code .highlight {
     margin: 0 1em;
-    font-family: monospace;
+    font-family: 'Nanum Gothic Coding', monospace;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
@@ -102,6 +112,10 @@ div.highlight {
 }
 
 
+#nav_prev_page::before, #nav_next_page::after {
+    padding: 8px;
+}
+
 #nav_prev_page::before {
     content: '← ';
 }
@@ -110,3 +124,23 @@ div.highlight {
     content: ' →';
 }
 
+footer {
+    line-height: 24px;
+}
+
+footer a {
+    margin: 0;
+    padding: 0 0.5em;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 12px;
+    color: #999;
+}
+
+footer img {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}

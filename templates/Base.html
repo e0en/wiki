@@ -13,7 +13,7 @@
     </head>
     <body>
     {% include 'Nav.html' %}
-        <section id="wrapper" class="section">
+        <section id="wrapper" class="content">
             <h1 class="title">{% block subTitle %}Sub title{% endblock %}</h1>
     {% block content %}
     {% endblock %}
@@ -25,6 +25,7 @@
 		<a href="https://www.github.com/e0en/wiki">
 			<img src="{{ url_for("static", filename="github-logo.png") }}" alt="Powered by e0enwiki at Github" width="24" height="24">
 		</a>
+        <a href="https://fonts.google.com/">Google Fonts</a>
 	</footer>
     </body> 
 </html>
