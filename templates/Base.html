@@ -3,13 +3,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-{% block metatags %}<meta name="articleuri" content="{{ escaped_article_name }}" />{% endblock %}
+{% block metatags %}
+{% endblock %}
     <title>{% block title %} Page title {% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for("static", filename="bulma.min.css") }}" media="screen" />
 {% block css %}
-<link rel="stylesheet" href="{{ url_for("static", filename="read.css") }}" media="screen" />
 {% endblock %}
-{% block script %}<script src="{{ url_for("static", filename="edit.js") }}"></script>{% endblock %}
+{% block script %}
+{% endblock %}
     </head>
     <body>
     {% include 'Nav.html' %}
