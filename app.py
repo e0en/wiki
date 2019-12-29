@@ -205,7 +205,6 @@ def add_history(article, is_new_page):
     db_session.commit()
 
 
-
 @app.route('/preview/<pagename>', methods=['POST', 'GET'])
 @login_required
 def preview(pagename):
@@ -286,9 +285,9 @@ def search():
 def history_list(pagename):
     # fetch history of the page of the given name
     hlist = History.query.\
-            filter(History.type != 'new').\
-            filter(History.name == pagename).\
-            order_by(History.id.desc()).all()
+        filter(History.type != 'new').\
+        filter(History.name == pagename).\
+        order_by(History.id.desc()).all()
 
     if len(hlist) == 0:
         return redirect(url_for('read', pagename=pagename))

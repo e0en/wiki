@@ -14,4 +14,3 @@ def to_url_name(name):
             result += c
     return result.strip().lower()
 
-
