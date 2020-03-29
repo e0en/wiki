@@ -3,6 +3,14 @@ window.onload = function() {
   const content = document.getElementById('content')
   const preview_button = document.getElementById('preview-button')
 
+  const hiddenForm = document.createElement('form')
+  hiddenForm.style.display = 'none'
+  hiddenForm.method = 'POST'
+  const hiddenText = document.createElement('textarea')
+  hiddenText.name = 'content'
+  hiddenForm.appendChild(hiddenText)
+  document.body.appendChild(hiddenForm)
+
   function update_content_field() {
     const n_char = content.value.length
     count.innerHTML = String(n_char)
@@ -11,18 +19,9 @@ window.onload = function() {
   preview_button.addEventListener('click', event => {
     event.preventDefault()
     const url = preview_button.href
-
-    const form = document.createElement('form')
-    form.method = 'POST'
-    form.style.diplay = 'none'
-    form.action = url
-    const hidden = document.createElement('textarea')
-    hidden.name = 'content'
-    hidden.id = 'preview-content'
-    hidden.value = content.value
-    hidden.style.diplay = 'none'
-    form.appendChild(hidden)
-    document.body.appendChild(form)
-    form.submit()
+    hiddenForm.action = url
+    txt = hiddenForm.getElementsByTagName('textarea')[0]
+    txt.value = content.value
+    hiddenForm.submit()
   })
 }
