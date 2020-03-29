@@ -8,3 +8,6 @@ log.txt
 secret.py
 media/wiki/upload/*
 .*.swp
+
+.python-version
+/.vim
