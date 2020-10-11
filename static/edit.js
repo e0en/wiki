@@ -16,6 +16,10 @@ window.onload = function() {
     count.innerHTML = String(n_char)
   }
 
+  content.addEventListener('input', event => {
+    update_content_field()
+  })
+
   preview_button.addEventListener('click', event => {
     event.preventDefault()
     const url = preview_button.href
@@ -24,4 +28,6 @@ window.onload = function() {
     txt.value = content.value
     hiddenForm.submit()
   })
+
+  update_content_field()
 }
