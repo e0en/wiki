@@ -219,11 +219,15 @@ def preview(pagename):
 @login_required
 def recentchanges():
     rows = History.query.order_by(History.time.desc()).all()
+    all_names = set([x[0] for x in db_session.query(Article.name).all()])
+    print(all_names)
     h_list = []
     d_current = ''
     names_in_day = []
     title_list = []
     for r in rows:
+        if r.name not in all_names:
+            continue
         h = {}
         day = str(r.time).split(' ')[0]
         h['name'] = r.name
@@ -231,6 +235,8 @@ def recentchanges():
         h['time_edit'] = str(r.time).split(' ')[1].split('.')[0]
         h['ip_address'] = r.ip_address
         h['type'] = r.type
+        if h['type'] == 'del':
+            continue
         if r.name in title_list:
             continue
         else:
