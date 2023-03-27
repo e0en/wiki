@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "wiki"
+version = "0.1.0"
+description = ""
+authors = ["Yoonseop Kang <e0engoon@gmail.com>"]
+readme = "README.md"
+packages = [{include="wiki"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.0"
+uvicorn = {extras = ["standard"], version = "^0.21.1"}
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.299"
+ruff = "^0.0.257"
+pytest = "^7.2.2"
+isort = "^5.12.0"
+ruff-lsp = "^0.0.23"
+pre-commit = "^3.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

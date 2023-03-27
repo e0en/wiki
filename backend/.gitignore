@@ -1,0 +1,7 @@
+.venv
+/dist/
+poetry.lock
+
+*.py[cod]
+__pycache__/
+
